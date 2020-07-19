@@ -6,9 +6,8 @@
  */
 
 import { BarktlerCore } from "../../src/core";
-import { IBarktler } from "../../src/declare";
 
-export class ExampleAPI extends BarktlerCore implements IBarktler {
+export class ExampleAPI extends BarktlerCore {
 
     public constructor() {
 

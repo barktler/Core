@@ -1,0 +1,38 @@
+{
+  "name": "@barktler/core",
+  "version": "1.0.0",
+  "description": ":droplet: Base for APIs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/barktler/Core.git"
+  },
+  "keywords": [
+    "API"
+  ],
+  "author": "WMXPY",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/barktler/Core/issues"
+  },
+  "homepage": "https://github.com/barktler/Core#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@sudoo/io": "^1.8.0",
+    "@sudoo/triforce": "^2.7.8"
+  },
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "include": [
+      "src/**/*.ts"
+    ],
+    "instrument": true,
+    "reporter": [
+      "json",
+      "text-summary"
+    ],
+    "report-dir": "coverage",
+    "sourceMap": true
+  }
+}

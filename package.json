@@ -15,7 +15,9 @@
     "url": "https://github.com/barktler/Core/issues"
   },
   "homepage": "https://github.com/barktler/Core#readme",
-  "dependencies": {},
+  "dependencies": {
+    "axios": "^0.19.2"
+  },
   "devDependencies": {
     "@sudoo/io": "^1.8.0",
     "@sudoo/triforce": "^2.7.8"

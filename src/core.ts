@@ -4,11 +4,9 @@
  * @description Core
  */
 
-import { IBarktler } from "./declare";
+export abstract class BarktlerCore {
 
-export abstract class BarktlerCore implements IBarktler {
-
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     protected constructor() {
-
     }
 }

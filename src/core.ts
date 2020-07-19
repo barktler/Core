@@ -14,9 +14,16 @@ export abstract class BarktlerCore {
 
     protected async _sendRequest<T extends any = any>(request: AxiosRequestConfig): Promise<T> {
 
-        const response: AxiosResponse = await Axios(request);
+        const response: AxiosResponse<T> = await Axios(request);
         const data: T = response.data;
 
         return data;
+    }
+
+    protected async _sendRequestRaw<T extends any = any>(request: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+
+        const response: AxiosResponse<T> = await Axios(request);
+
+        return response;
     }
 }

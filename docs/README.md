@@ -6,3 +6,11 @@
 [![downloads](https://img.shields.io/npm/dm/@barktler/core.svg)](https://www.npmjs.com/package/@barktler/core)
 
 :droplet: Base for APIs
+
+## Install
+
+```sh
+yarn add @barktler/core
+# Or
+npm install @barktler/core --save
+```

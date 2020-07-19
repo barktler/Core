@@ -4,7 +4,9 @@
  * @description Core
  */
 
-export class BarktlerCore {
+import { IBarktler } from "./declare";
+
+export abstract class BarktlerCore implements IBarktler {
 
     protected constructor() {
 

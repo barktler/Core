@@ -3,3 +3,5 @@
  * @namespace Core
  * @description Index
  */
+
+export * from "./core";

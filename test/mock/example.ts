@@ -7,7 +7,7 @@
 
 import { BarktlerCore } from "../../src/core";
 
-export class ExampleAPI extends BarktlerCore {
+export class ExampleAPI extends BarktlerCore<any, any> {
 
     public constructor() {
 

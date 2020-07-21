@@ -9,7 +9,7 @@ import Axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { IRequestConfig, IResponseConfig } from "./declare";
 import { generateAxiosRequest, parseAxiosResponse } from "./util";
 
-export abstract class BarktlerCore<RequestBody extends any = undefined, ResponseData extends any = any> {
+export abstract class BarktlerCore<RequestBody extends any = any, ResponseData extends any = any> {
 
     private readonly _bodyPreProcessor: DataProcessor<RequestBody>;
     private readonly _dataPostProcessor: DataProcessor<ResponseData>;
@@ -39,7 +39,7 @@ export abstract class BarktlerCore<RequestBody extends any = undefined, Response
 
         const requestConfig: AxiosRequestConfig = generateAxiosRequest({
             ...request,
-            body: this._bodyPreProcessor.process(request.body),
+            body: this._bodyPreProcessor.process(request.body as RequestBody),
         });
         const rawResponse: AxiosResponse<ResponseData> = await Axios(requestConfig);
         const response = parseAxiosResponse<ResponseData>(rawResponse);

@@ -11,20 +11,20 @@ import { generateAxiosRequest, parseAxiosResponse } from "./util";
 
 export abstract class BarktlerCore<RequestBody extends any = any, ResponseData extends any = any> {
 
-    private readonly _bodyPreHook: AsyncDataHook<RequestBody>;
-    private readonly _dataPostHook: AsyncDataHook<ResponseData>;
+    private readonly _bodyHook: AsyncDataHook<RequestBody>;
+    private readonly _dataHook: AsyncDataHook<ResponseData>;
 
     protected constructor() {
 
-        this._bodyPreHook = AsyncDataHook.create<RequestBody>();
-        this._dataPostHook = AsyncDataHook.create<ResponseData>();
+        this._bodyHook = AsyncDataHook.create<RequestBody>();
+        this._dataHook = AsyncDataHook.create<ResponseData>();
     }
 
-    public get bodyPreProcessor(): AsyncDataHook<RequestBody> {
-        return this._bodyPreHook;
+    public get bodyHook(): AsyncDataHook<RequestBody> {
+        return this._bodyHook;
     }
-    public get dataPostProcessor(): AsyncDataHook<ResponseData> {
-        return this._dataPostHook;
+    public get dataHook(): AsyncDataHook<ResponseData> {
+        return this._dataHook;
     }
 
     protected async _sendRequest(request: IRequestConfig<RequestBody>): Promise<ResponseData> {
@@ -37,7 +37,7 @@ export abstract class BarktlerCore<RequestBody extends any = any, ResponseData e
 
     protected async _sendRequestRaw(request: IRequestConfig<RequestBody>): Promise<IResponseConfig<ResponseData>> {
 
-        const preprocessedBody: RequestBody = await this._bodyPreHook.process(request.body as RequestBody);
+        const preprocessedBody: RequestBody = await this._bodyHook.process(request.body as RequestBody);
         const requestConfig: AxiosRequestConfig = generateAxiosRequest({
             ...request,
             body: preprocessedBody,
@@ -46,7 +46,7 @@ export abstract class BarktlerCore<RequestBody extends any = any, ResponseData e
         const rawResponse: AxiosResponse<ResponseData> = await Axios(requestConfig);
         const response = parseAxiosResponse<ResponseData>(rawResponse);
 
-        const postProcessedData: ResponseData = await this._dataPostHook.process(response.data);
+        const postProcessedData: ResponseData = await this._dataHook.process(response.data);
         return {
             ...response,
             data: postProcessedData,

@@ -37,8 +37,8 @@ export abstract class BarktlerCore<RequestBody extends any = any, ResponseData e
 
     protected async _sendRequestRaw(request: IRequestConfig<RequestBody>): Promise<IResponseConfig<ResponseData>> {
 
-        const preprocessedBody: RequestBody = await this._bodyHook.process(request.body as RequestBody);
-        const requestConfig: AxiosRequestConfig = generateAxiosRequest({
+        const preprocessedBody: RequestBody = await this._bodyHook.process(request.body);
+        const requestConfig: AxiosRequestConfig = generateAxiosRequest<RequestBody>({
             ...request,
             body: preprocessedBody,
         });

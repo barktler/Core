@@ -7,15 +7,15 @@
 import { ResponseType } from "axios";
 
 export type Method =
-    | 'GET'
-    | 'DELETE'
-    | 'HEAD'
-    | 'OPTIONS'
-    | 'POST'
-    | 'PUT'
-    | 'PATCH'
-    | 'LINK'
-    | 'UNLINK';
+    | "GET"
+    | "DELETE"
+    | "HEAD"
+    | "OPTIONS"
+    | "POST"
+    | "PUT"
+    | "PATCH"
+    | "LINK"
+    | "UNLINK";
 
 export interface IRequestConfig<Body extends any = any> {
 
@@ -37,5 +37,6 @@ export interface IResponseConfig<Data extends any = any> {
     readonly data: Data;
     readonly status: number;
     readonly statusText: string;
+
     readonly headers: Record<string, string>;
 }

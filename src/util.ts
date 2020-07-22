@@ -14,9 +14,14 @@ export const generateAxiosRequest = <Body>(request: IRequestConfig<Body>): Axios
         url: request.url,
         method: request.method,
         baseURL: request.baseURL,
-        headers: request.headers,
 
+        headers: request.headers,
+        params: request.params,
         data: request.body,
+
+        timeout: request.timeout,
+
+        responseType: request.responseType,
     };
 };
 
@@ -27,6 +32,7 @@ export const parseAxiosResponse = <Data>(response: AxiosResponse<Data>): IRespon
         data: response.data,
         status: response.status,
         statusText: response.statusText,
+
         headers: response.headers,
     };
 };

@@ -16,7 +16,7 @@
   },
   "homepage": "https://github.com/barktler/Core#readme",
   "dependencies": {
-    "@sudoo/processor": "^1.0.0",
+    "@sudoo/processor": "^1.2.1",
     "axios": "^0.19.2"
   },
   "devDependencies": {

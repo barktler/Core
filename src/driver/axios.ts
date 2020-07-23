@@ -1,11 +1,11 @@
 /**
  * @author WMXPY
- * @namespace Core
- * @description Util
+ * @namespace Core_Driver
+ * @description Axios
  */
 
 import { AxiosRequestConfig, AxiosResponse } from "axios";
-import { IRequestConfig, IResponseConfig } from "./declare";
+import { IRequestConfig, IResponseConfig } from "../declare";
 
 export const generateAxiosRequest = <Body>(request: IRequestConfig<Body>): AxiosRequestConfig => {
 
@@ -36,4 +36,3 @@ export const parseAxiosResponse = <Data>(response: AxiosResponse<Data>): IRespon
         headers: response.headers,
     };
 };
-

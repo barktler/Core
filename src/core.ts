@@ -20,10 +20,10 @@ export abstract class BarktlerCore<RequestBody extends any = any, ResponseData e
         this._postHook = AsyncDataHook.create<IResponseConfig<ResponseData>>();
     }
 
-    public get bodyHook(): AsyncDataHook<IRequestConfig<RequestBody>> {
+    public get preHook(): AsyncDataHook<IRequestConfig<RequestBody>> {
         return this._preHook;
     }
-    public get dataHook(): AsyncDataHook<IResponseConfig<ResponseData>> {
+    public get postHook(): AsyncDataHook<IResponseConfig<ResponseData>> {
         return this._postHook;
     }
 

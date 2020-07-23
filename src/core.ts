@@ -11,20 +11,20 @@ import { generateAxiosRequest, parseAxiosResponse } from "./util";
 
 export abstract class BarktlerCore<RequestBody extends any = any, ResponseData extends any = any> {
 
-    private readonly _bodyHook: AsyncDataHook<RequestBody>;
-    private readonly _dataHook: AsyncDataHook<ResponseData>;
+    private readonly _preHook: AsyncDataHook<IRequestConfig<RequestBody>>;
+    private readonly _postHook: AsyncDataHook<IResponseConfig<ResponseData>>;
 
     protected constructor() {
 
-        this._bodyHook = AsyncDataHook.create<RequestBody>();
-        this._dataHook = AsyncDataHook.create<ResponseData>();
+        this._preHook = AsyncDataHook.create<IRequestConfig<RequestBody>>();
+        this._postHook = AsyncDataHook.create<IResponseConfig<ResponseData>>();
     }
 
-    public get bodyHook(): AsyncDataHook<RequestBody> {
-        return this._bodyHook;
+    public get bodyHook(): AsyncDataHook<IRequestConfig<RequestBody>> {
+        return this._preHook;
     }
-    public get dataHook(): AsyncDataHook<ResponseData> {
-        return this._dataHook;
+    public get dataHook(): AsyncDataHook<IResponseConfig<ResponseData>> {
+        return this._postHook;
     }
 
     protected async _sendRequest(request: IRequestConfig<RequestBody>): Promise<ResponseData> {
@@ -37,19 +37,13 @@ export abstract class BarktlerCore<RequestBody extends any = any, ResponseData e
 
     protected async _sendRequestRaw(request: IRequestConfig<RequestBody>): Promise<IResponseConfig<ResponseData>> {
 
-        const preprocessedBody: RequestBody = await this._bodyHook.process(request.body as RequestBody);
-        const requestConfig: AxiosRequestConfig = generateAxiosRequest<RequestBody>({
-            ...request,
-            body: preprocessedBody,
-        });
+        const preProcessed: IRequestConfig<RequestBody> = await this._preHook.process(request);
+        const requestConfig: AxiosRequestConfig = generateAxiosRequest<RequestBody>(preProcessed);
 
         const rawResponse: AxiosResponse<ResponseData> = await Axios(requestConfig);
         const response = parseAxiosResponse<ResponseData>(rawResponse);
 
-        const postProcessedData: ResponseData = await this._dataHook.process(response.data);
-        return {
-            ...response,
-            data: postProcessedData,
-        }
+        const postProcessedData: IResponseConfig<ResponseData> = await this._postHook.process(response);
+        return postProcessedData;
     }
 }

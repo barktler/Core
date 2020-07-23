@@ -5,9 +5,8 @@
  */
 
 import { AsyncDataHook } from "@sudoo/processor";
-import Axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { IRequestConfig, IResponseConfig } from "./declare";
-import { generateAxiosRequest, parseAxiosResponse } from "./util";
+import { axiosDriver } from "./driver/axios";
 
 export abstract class BarktlerCore<RequestBody extends any = any, ResponseData extends any = any> {
 
@@ -38,10 +37,8 @@ export abstract class BarktlerCore<RequestBody extends any = any, ResponseData e
     protected async _sendRequestRaw(request: IRequestConfig<RequestBody>): Promise<IResponseConfig<ResponseData>> {
 
         const preProcessed: IRequestConfig<RequestBody> = await this._preHook.process(request);
-        const requestConfig: AxiosRequestConfig = generateAxiosRequest<RequestBody>(preProcessed);
 
-        const rawResponse: AxiosResponse<ResponseData> = await Axios(requestConfig);
-        const response = parseAxiosResponse<ResponseData>(rawResponse);
+        const response: IResponseConfig<ResponseData> = await axiosDriver<RequestBody, ResponseData>(preProcessed);
 
         const postProcessedData: IResponseConfig<ResponseData> = await this._postHook.process(response);
         return postProcessedData;

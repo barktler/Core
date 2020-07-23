@@ -4,8 +4,8 @@
  * @description Axios
  */
 
-import { AxiosRequestConfig, AxiosResponse } from "axios";
-import { IRequestConfig, IResponseConfig } from "../declare";
+import Axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import { IRequestConfig, IResponseConfig, RequestDriver } from "../declare";
 
 export const generateAxiosRequest = <Body>(request: IRequestConfig<Body>): AxiosRequestConfig => {
 
@@ -13,7 +13,6 @@ export const generateAxiosRequest = <Body>(request: IRequestConfig<Body>): Axios
 
         url: request.url,
         method: request.method,
-        baseURL: request.baseURL,
 
         headers: request.headers,
         params: request.params,
@@ -35,4 +34,14 @@ export const parseAxiosResponse = <Data>(response: AxiosResponse<Data>): IRespon
 
         headers: response.headers,
     };
+};
+
+export const axiosDriver: RequestDriver = async <Body extends any = any, Data extends any = any>(request: IRequestConfig<Body>): Promise<IResponseConfig<Data>> => {
+
+    const requestConfig: AxiosRequestConfig = generateAxiosRequest<Body>(request);
+
+    const rawResponse: AxiosResponse<Data> = await Axios(requestConfig);
+
+    const response = parseAxiosResponse<Data>(rawResponse);
+    return response;
 };

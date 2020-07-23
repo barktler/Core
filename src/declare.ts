@@ -21,7 +21,6 @@ export interface IRequestConfig<Body extends any = any> {
 
     readonly url: string;
     readonly method: Method;
-    readonly baseURL?: string;
 
     readonly headers?: Record<string, string>;
     readonly params?: Record<string, string>;
@@ -40,3 +39,5 @@ export interface IResponseConfig<Data extends any = any> {
 
     readonly headers: Record<string, string>;
 }
+
+export type RequestDriver = <Body extends any = any, Data extends any = any>(request: IRequestConfig<Body>) => Promise<IResponseConfig<Data>>;

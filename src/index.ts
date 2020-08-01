@@ -4,5 +4,6 @@
  * @description Index
  */
 
+export { IRequestConfig, IResponseConfig, RequestDriver } from "@barktler/driver";
 export * from "./core";
 

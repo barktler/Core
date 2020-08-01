@@ -5,5 +5,4 @@
  */
 
 export * from "./core";
-export * from "./declare";
 

@@ -4,23 +4,20 @@
  * @description Core
  */
 
+import { IRequestConfig, IResponseConfig, RequestDriver } from "@barktler/driver";
 import { AsyncDataHook } from "@sudoo/processor";
-import { IRequestConfig, IResponseConfig, RequestDriver } from "./declare";
-import { axiosDriver } from "./driver/axios";
 
 export abstract class BarktlerCore<RequestBody extends any = any, ResponseData extends any = any> {
 
     private readonly _preHook: AsyncDataHook<IRequestConfig<RequestBody>>;
     private readonly _postHook: AsyncDataHook<IResponseConfig<ResponseData>>;
 
-    private _driver: RequestDriver;
+    private _driver: RequestDriver | null = null;
 
     protected constructor() {
 
         this._preHook = AsyncDataHook.create<IRequestConfig<RequestBody>>();
         this._postHook = AsyncDataHook.create<IResponseConfig<ResponseData>>();
-
-        this._driver = axiosDriver;
     }
 
     public get preHook(): AsyncDataHook<IRequestConfig<RequestBody>> {
@@ -28,12 +25,6 @@ export abstract class BarktlerCore<RequestBody extends any = any, ResponseData e
     }
     public get postHook(): AsyncDataHook<IResponseConfig<ResponseData>> {
         return this._postHook;
-    }
-
-    public useDefaultDriver(): this {
-
-        this._driver = axiosDriver;
-        return this;
     }
 
     public useDriver(driver: RequestDriver): this {
@@ -51,6 +42,10 @@ export abstract class BarktlerCore<RequestBody extends any = any, ResponseData e
     }
 
     protected async _sendRequestRaw(request: IRequestConfig<RequestBody>): Promise<IResponseConfig<ResponseData>> {
+
+        if (!this._driver) {
+            throw new Error('[Barktler] Driver not found');
+        }
 
         const preProcessed: IRequestConfig<RequestBody> = await this._preHook.process(request);
 

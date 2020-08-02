@@ -33,6 +33,10 @@ export abstract class BarktlerCore<RequestBody extends any = any, ResponseData e
         return this;
     }
 
+    public overridePreVerifyFailing(overrideFunction: (request: IRequestConfig<RequestBody>) => void) {
+
+    }
+
     protected async _sendRequest(request: IRequestConfig<RequestBody>): Promise<ResponseData> {
 
         const response: IResponseConfig<ResponseData> = await this._sendRequestRaw(request);
@@ -45,6 +49,11 @@ export abstract class BarktlerCore<RequestBody extends any = any, ResponseData e
 
         if (!this._driver) {
             throw new Error('[Barktler] Driver not found');
+        }
+
+        const verifyResult: boolean = await this._preHook.verify(request);
+        if (!verifyResult) {
+            return null;
         }
 
         const preProcessed: IRequestConfig<RequestBody> = await this._preHook.process(request);

@@ -67,9 +67,6 @@ export abstract class BarktlerCore<RequestBody extends any = any, ResponseData e
         }
 
         const verifyResult: boolean = await this._preHook.verify(request);
-        if (!verifyResult) {
-            return null;
-        }
 
         const preProcessed: IRequestConfig<RequestBody> = await this._preHook.process(request);
 

@@ -6,7 +6,7 @@
 
 import { IRequestConfig, IResponseConfig, RequestDriver } from "@barktler/driver";
 import { AsyncDataHook } from "@sudoo/processor";
-import { RequestOverrideFunction } from "./declare";
+import { RequestOverrideFunction, ResponseOverrideFunction } from "./declare";
 
 export abstract class BarktlerCore<RequestBody extends any = any, ResponseData extends any = any> {
 
@@ -14,6 +14,7 @@ export abstract class BarktlerCore<RequestBody extends any = any, ResponseData e
     private readonly _postHook: AsyncDataHook<IResponseConfig<ResponseData>>;
 
     private _preVerifyFailing: RequestOverrideFunction<RequestBody> | null;
+    private _postVerifyFailing: ResponseOverrideFunction<RequestBody, ResponseData> | null;
 
     private _driver: RequestDriver | null = null;
 
@@ -23,6 +24,7 @@ export abstract class BarktlerCore<RequestBody extends any = any, ResponseData e
         this._postHook = AsyncDataHook.create<IResponseConfig<ResponseData>>();
 
         this._preVerifyFailing = null;
+        this._postVerifyFailing = null;
     }
 
     public get preHook(): AsyncDataHook<IRequestConfig<RequestBody>> {
@@ -41,6 +43,12 @@ export abstract class BarktlerCore<RequestBody extends any = any, ResponseData e
     public overridePreVerifyFailing(overrideFunction: RequestOverrideFunction<RequestBody>): this {
 
         this._preVerifyFailing = overrideFunction;
+        return this;
+    }
+
+    public overridePostVerifyFailing(overrideFunction: ResponseOverrideFunction<RequestBody, ResponseData>): this {
+
+        this._postVerifyFailing = overrideFunction;
         return this;
     }
 

@@ -66,8 +66,8 @@ export abstract class BarktlerCore<RequestBody extends any = any, ResponseData e
             throw new Error('[Barktler] Driver not found');
         }
 
-        const verifyResult: boolean = await this._preHook.verify(request);
-        if (!verifyResult) {
+        const preVerifyResult: boolean = await this._preHook.verify(request);
+        if (!preVerifyResult) {
             this._executePreVerify(request);
         }
 

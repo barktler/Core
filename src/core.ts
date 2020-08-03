@@ -8,7 +8,7 @@ import { IRequestConfig, IResponseConfig, RequestDriver } from "@barktler/driver
 import { AsyncDataHook } from "@sudoo/processor";
 import { RequestOverrideFunction, ResponseOverrideFunction } from "./declare";
 
-export abstract class BarktlerCore<RequestBody extends any = any, ResponseData extends any = any> {
+export abstract class Barktler<RequestBody extends any = any, ResponseData extends any = any> {
 
     protected static _globalDefaultDriver: RequestDriver | null = null;
 
@@ -99,8 +99,8 @@ export abstract class BarktlerCore<RequestBody extends any = any, ResponseData e
             return this._driver;
         }
 
-        if (BarktlerCore._globalDefaultDriver) {
-            return BarktlerCore._globalDefaultDriver;
+        if (Barktler._globalDefaultDriver) {
+            return Barktler._globalDefaultDriver;
         }
 
         return null;

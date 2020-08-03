@@ -5,9 +5,9 @@
  * @override Mock
  */
 
-import { BarktlerCore } from "../../src/core";
+import { Barktler } from "../../src/core";
 
-export class ExampleAPI extends BarktlerCore<any, any> {
+export class ExampleAPI extends Barktler<any, any> {
 
     public constructor() {
 

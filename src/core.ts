@@ -68,18 +68,23 @@ export abstract class BarktlerCore<RequestBody extends any = any, ResponseData e
 
         const verifyResult: boolean = await this._preHook.verify(request);
         if (!verifyResult) {
-            this._executeVerify(request);
+            this._executePreVerify(request);
         }
 
         const preProcessed: IRequestConfig<RequestBody> = await this._preHook.process(request);
 
         const response: IResponseConfig<ResponseData> = await this._driver<RequestBody, ResponseData>(preProcessed);
 
+        const postVerifyResult: boolean = await this._postHook.verify(response);
+        if (!postVerifyResult) {
+            this._executePostVerify(preProcessed, response);
+        }
+
         const postProcessedData: IResponseConfig<ResponseData> = await this._postHook.process(response);
         return postProcessedData;
     }
 
-    private _executeVerify(request: IRequestConfig<RequestBody>) {
+    private _executePreVerify(request: IRequestConfig<RequestBody>) {
 
         if (typeof this._preVerifyFailing === 'function') {
 
@@ -92,5 +97,20 @@ export abstract class BarktlerCore<RequestBody extends any = any, ResponseData e
         }
 
         throw new Error('[Barktler] Pre Verify Failed');
+    }
+
+    private _executePostVerify(request: IRequestConfig<RequestBody>, response: IResponseConfig<ResponseData>) {
+
+        if (typeof this._postVerifyFailing === 'function') {
+
+            const result: void | Error = this._postVerifyFailing(request, response);
+            if (result instanceof Error) {
+                throw result;
+            }
+
+            return;
+        }
+
+        throw new Error('[Barktler] Post Verify Failed');
     }
 }

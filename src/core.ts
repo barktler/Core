@@ -8,7 +8,7 @@ import { IRequestConfig, IResponseConfig, RequestDriver } from "@barktler/driver
 import { AsyncDataHook } from "@sudoo/processor";
 import { RequestOverrideFunction, ResponseOverrideFunction } from "./declare";
 
-export class Barktler<RequestBody extends any = any, ResponseData extends any = any> {
+export abstract class Barktler<RequestBody extends any = any, ResponseData extends any = any> {
 
     protected static _globalDefaultDriver: RequestDriver | null = null;
 
@@ -61,26 +61,6 @@ export class Barktler<RequestBody extends any = any, ResponseData extends any = 
 
         this._postVerifyFailing = overrideFunction;
         return this;
-    }
-
-    public clone(): Barktler<RequestBody, ResponseData> {
-
-        const barktler: Barktler<RequestBody, ResponseData> = new Barktler<RequestBody, ResponseData>(
-            this._preHook.clone(),
-            this._postHook.clone(),
-        );
-
-        if (this._driver) {
-            barktler.useDriver(this._driver);
-        }
-        if (this._preVerifyFailing) {
-            barktler.overridePreVerifyFailing(this._preVerifyFailing);
-        }
-        if (this._postVerifyFailing) {
-            barktler.overridePostVerifyFailing(this._postVerifyFailing);
-        }
-
-        return barktler;
     }
 
     protected async _sendRequest(request: IRequestConfig<RequestBody>): Promise<ResponseData> {

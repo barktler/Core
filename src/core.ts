@@ -26,10 +26,13 @@ export class Barktler<RequestBody extends any = any, ResponseData extends any = 
 
     private _driver: RequestDriver | null = null;
 
-    protected constructor() {
+    protected constructor(
+        preHook: AsyncDataHook<IRequestConfig<RequestBody>> = AsyncDataHook.create<IRequestConfig<RequestBody>>(),
+        postHook: AsyncDataHook<IResponseConfig<ResponseData>> = AsyncDataHook.create<IResponseConfig<ResponseData>>(),
+    ) {
 
-        this._preHook = AsyncDataHook.create<IRequestConfig<RequestBody>>();
-        this._postHook = AsyncDataHook.create<IResponseConfig<ResponseData>>();
+        this._preHook = preHook;
+        this._postHook = postHook;
 
         this._preVerifyFailing = null;
         this._postVerifyFailing = null;
@@ -62,7 +65,20 @@ export class Barktler<RequestBody extends any = any, ResponseData extends any = 
 
     public clone(): Barktler<RequestBody, ResponseData> {
 
-        const barktler: Barktler<RequestBody, ResponseData> = new Barktler<RequestBody, ResponseData>();
+        const barktler: Barktler<RequestBody, ResponseData> = new Barktler<RequestBody, ResponseData>(
+            this._preHook.clone(),
+            this._postHook.clone(),
+        );
+
+        if (this._driver) {
+            barktler.useDriver(this._driver);
+        }
+        if (this._preVerifyFailing) {
+            barktler.overridePreVerifyFailing(this._preVerifyFailing);
+        }
+        if (this._postVerifyFailing) {
+            barktler.overridePostVerifyFailing(this._postVerifyFailing);
+        }
 
         return barktler;
     }

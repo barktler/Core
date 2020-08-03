@@ -10,6 +10,14 @@ import { RequestOverrideFunction, ResponseOverrideFunction } from "./declare";
 
 export abstract class BarktlerCore<RequestBody extends any = any, ResponseData extends any = any> {
 
+    protected static _globalDefaultDriver: RequestDriver | null = null;
+
+    public static useGlobalDefaultDriver(driver: RequestDriver): void {
+
+        this._globalDefaultDriver = driver;
+        return;
+    }
+
     private readonly _preHook: AsyncDataHook<IRequestConfig<RequestBody>>;
     private readonly _postHook: AsyncDataHook<IResponseConfig<ResponseData>>;
 
@@ -62,7 +70,8 @@ export abstract class BarktlerCore<RequestBody extends any = any, ResponseData e
 
     protected async _sendRequestRaw(request: IRequestConfig<RequestBody>): Promise<IResponseConfig<ResponseData>> {
 
-        if (!this._driver) {
+        const driver: RequestDriver | null = this._getDriver();
+        if (!driver) {
             throw new Error('[Barktler] Driver not found');
         }
 
@@ -73,7 +82,7 @@ export abstract class BarktlerCore<RequestBody extends any = any, ResponseData e
 
         const preProcessed: IRequestConfig<RequestBody> = await this._preHook.process(request);
 
-        const response: IResponseConfig<ResponseData> = await this._driver<RequestBody, ResponseData>(preProcessed);
+        const response: IResponseConfig<ResponseData> = await driver<RequestBody, ResponseData>(preProcessed);
 
         const postVerifyResult: boolean = await this._postHook.verify(response);
         if (!postVerifyResult) {
@@ -82,6 +91,19 @@ export abstract class BarktlerCore<RequestBody extends any = any, ResponseData e
 
         const postProcessedData: IResponseConfig<ResponseData> = await this._postHook.process(response);
         return postProcessedData;
+    }
+
+    private _getDriver(): RequestDriver | null {
+
+        if (this._driver) {
+            return this._driver;
+        }
+
+        if (BarktlerCore._globalDefaultDriver) {
+            return BarktlerCore._globalDefaultDriver;
+        }
+
+        return null;
     }
 
     private _executePreVerify(request: IRequestConfig<RequestBody>) {

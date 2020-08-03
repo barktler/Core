@@ -67,6 +67,9 @@ export abstract class BarktlerCore<RequestBody extends any = any, ResponseData e
         }
 
         const verifyResult: boolean = await this._preHook.verify(request);
+        if (!verifyResult) {
+            this._executeVerify(request);
+        }
 
         const preProcessed: IRequestConfig<RequestBody> = await this._preHook.process(request);
 
@@ -74,5 +77,20 @@ export abstract class BarktlerCore<RequestBody extends any = any, ResponseData e
 
         const postProcessedData: IResponseConfig<ResponseData> = await this._postHook.process(response);
         return postProcessedData;
+    }
+
+    private _executeVerify(request: IRequestConfig<RequestBody>) {
+
+        if (typeof this._preVerifyFailing === 'function') {
+
+            const result: void | Error = this._preVerifyFailing(request);
+            if (result instanceof Error) {
+                throw result;
+            }
+
+            return;
+        }
+
+        throw new Error('[Barktler] Pre Verify Failed');
     }
 }

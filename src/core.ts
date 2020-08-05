@@ -7,7 +7,7 @@
 import { IRequestConfig, IResponseConfig, RequestDriver } from "@barktler/driver";
 import { Pattern } from "@sudoo/pattern";
 import { AsyncDataHook } from "@sudoo/processor";
-import { RequestOverrideFunction, ResponseOverrideFunction } from "./declare";
+import { RequestVerifyOverrideFunction, ResponseVerifyOverrideFunction } from "./declare";
 
 export abstract class Barktler<RequestBody extends any = any, ResponseData extends any = any> {
 
@@ -25,8 +25,8 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
     private _requestBodyPattern?: Pattern;
     private _responseDataPattern?: Pattern;
 
-    private _preVerifyFailing: RequestOverrideFunction<RequestBody> | null;
-    private _postVerifyFailing: ResponseOverrideFunction<RequestBody, ResponseData> | null;
+    private _preVerifyFailing: RequestVerifyOverrideFunction<RequestBody> | null;
+    private _postVerifyFailing: ResponseVerifyOverrideFunction<RequestBody, ResponseData> | null;
 
     private _driver: RequestDriver | null;
 
@@ -57,13 +57,13 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         return this;
     }
 
-    public overridePreVerifyFailing(overrideFunction: RequestOverrideFunction<RequestBody>): this {
+    public overridePreVerifyFailing(overrideFunction: RequestVerifyOverrideFunction<RequestBody>): this {
 
         this._preVerifyFailing = overrideFunction;
         return this;
     }
 
-    public overridePostVerifyFailing(overrideFunction: ResponseOverrideFunction<RequestBody, ResponseData>): this {
+    public overridePostVerifyFailing(overrideFunction: ResponseVerifyOverrideFunction<RequestBody, ResponseData>): this {
 
         this._postVerifyFailing = overrideFunction;
         return this;
@@ -96,22 +96,48 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
             throw new Error('[Barktler] Driver not found');
         }
 
-        const preVerifyResult: boolean = await this._preHook.verify(request);
+        const injectedRequest: IRequestConfig<RequestBody> = this._injectRequest(request);
+        const preVerifyResult: boolean = await this._preHook.verify(injectedRequest);
         if (!preVerifyResult) {
-            this._executePreVerify(request);
+            this._executePreVerify(injectedRequest);
         }
 
-        const preProcessed: IRequestConfig<RequestBody> = await this._preHook.process(request);
+        const preProcessed: IRequestConfig<RequestBody> = await this._preHook.process(injectedRequest);
 
         const response: IResponseConfig<ResponseData> = await driver<RequestBody, ResponseData>(preProcessed);
+        const injectedResponse: IResponseConfig<ResponseData> = this._injectResponse(response);
 
-        const postVerifyResult: boolean = await this._postHook.verify(response);
+        const postVerifyResult: boolean = await this._postHook.verify(injectedResponse);
         if (!postVerifyResult) {
-            this._executePostVerify(preProcessed, response);
+            this._executePostVerify(preProcessed, injectedResponse);
         }
 
-        const postProcessedData: IResponseConfig<ResponseData> = await this._postHook.process(response);
+        const postProcessedData: IResponseConfig<ResponseData> = await this._postHook.process(injectedResponse);
         return postProcessedData;
+    }
+
+    private _injectRequest(request: IRequestConfig<RequestBody>): IRequestConfig<RequestBody> {
+
+        if (request.pattern) {
+            return request;
+        }
+
+        return {
+            ...request,
+            pattern: this._requestBodyPattern,
+        };
+    }
+
+    private _injectResponse(response: IResponseConfig<ResponseData>): IResponseConfig<ResponseData> {
+
+        if (response.pattern) {
+            return response;
+        }
+
+        return {
+            ...response,
+            pattern: this._responseDataPattern,
+        };
     }
 
     private _getDriver(): RequestDriver | null {

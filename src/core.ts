@@ -5,6 +5,7 @@
  */
 
 import { IRequestConfig, IResponseConfig, RequestDriver } from "@barktler/driver";
+import { Pattern } from "@sudoo/pattern";
 import { AsyncDataHook } from "@sudoo/processor";
 import { RequestOverrideFunction, ResponseOverrideFunction } from "./declare";
 
@@ -21,10 +22,13 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
     private readonly _preHook: AsyncDataHook<IRequestConfig<RequestBody>>;
     private readonly _postHook: AsyncDataHook<IResponseConfig<ResponseData>>;
 
+    private _requestBodyPattern?: Pattern;
+    private _responseDataPattern?: Pattern;
+
     private _preVerifyFailing: RequestOverrideFunction<RequestBody> | null;
     private _postVerifyFailing: ResponseOverrideFunction<RequestBody, ResponseData> | null;
 
-    private _driver: RequestDriver | null = null;
+    private _driver: RequestDriver | null;
 
     protected constructor(
         preHook: AsyncDataHook<IRequestConfig<RequestBody>> = AsyncDataHook.create<IRequestConfig<RequestBody>>(),
@@ -36,6 +40,8 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
 
         this._preVerifyFailing = null;
         this._postVerifyFailing = null;
+
+        this._driver = null;
     }
 
     public get preHook(): AsyncDataHook<IRequestConfig<RequestBody>> {
@@ -60,6 +66,18 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
     public overridePostVerifyFailing(overrideFunction: ResponseOverrideFunction<RequestBody, ResponseData>): this {
 
         this._postVerifyFailing = overrideFunction;
+        return this;
+    }
+
+    protected _declareRequestBodyPattern(pattern: Pattern): this {
+
+        this._requestBodyPattern = pattern;
+        return this;
+    }
+
+    protected _declareResponseDataPattern(pattern: Pattern): this {
+
+        this._responseDataPattern = pattern;
         return this;
     }
 

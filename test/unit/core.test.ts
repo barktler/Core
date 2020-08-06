@@ -8,7 +8,7 @@
 import { expect } from "chai";
 import * as Chance from "chance";
 import { Barktler } from "../../src";
-import { ExampleAPI } from "../mock/example";
+import { ExampleAPI, ExampleAPIResponse } from "../mock/example";
 
 describe('Given {ExampleAPI} Class', (): void => {
 
@@ -21,5 +21,15 @@ describe('Given {ExampleAPI} Class', (): void => {
 
         expect(api).to.be.instanceOf(ExampleAPI);
         expect(api).to.be.instanceOf(Barktler);
+    });
+
+    it('should be able to use mock driver', async (): Promise<void> => {
+
+        const api: ExampleAPI = new ExampleAPI();
+        api.useMockDriver();
+
+        const response: ExampleAPIResponse = await api.fetch();
+
+        expect(typeof response.hello).to.be.equal('string');
     });
 });

@@ -4,7 +4,7 @@
  * @description Core
  */
 
-import { IRequestConfig, IResponseConfig, mockDriver, RequestDriver } from "@barktler/driver";
+import { IRequestConfig, IResponseConfig, mockDriver, RequestDriver, IInjectConfig } from "@barktler/driver";
 import { Pattern } from "@sudoo/pattern";
 import { AsyncDataHook } from "@sudoo/processor";
 import { RequestVerifyOverrideFunction, ResponseVerifyOverrideFunction } from "./declare";
@@ -101,7 +101,7 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
             throw new Error('[Barktler] Driver not found');
         }
 
-        const injectedRequest: IRequestConfig<RequestBody> = this._injectRequest(request);
+        const injectedRequest: IRequestConfig<RequestBody> = this._inject(request);
         const preVerifyResult: boolean = await this._preHook.verify(injectedRequest);
         if (!preVerifyResult) {
             this._executePreVerify(injectedRequest);
@@ -110,7 +110,7 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         const preProcessed: IRequestConfig<RequestBody> = await this._preHook.process(injectedRequest);
 
         const response: IResponseConfig<ResponseData> = await driver<RequestBody, ResponseData>(preProcessed);
-        const injectedResponse: IResponseConfig<ResponseData> = this._injectResponse(response);
+        const injectedResponse: IResponseConfig<ResponseData> = this._inject(response);
 
         const postVerifyResult: boolean = await this._postHook.verify(injectedResponse);
         if (!postVerifyResult) {
@@ -121,27 +121,12 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         return postProcessedData;
     }
 
-    private _injectRequest(request: IRequestConfig<RequestBody>): IRequestConfig<RequestBody> {
-
-        if (request.pattern) {
-            return request;
-        }
+    private _inject<T extends IInjectConfig>(request: T): T {
 
         return {
             ...request,
-            pattern: this._requestBodyPattern,
-        };
-    }
-
-    private _injectResponse(response: IResponseConfig<ResponseData>): IResponseConfig<ResponseData> {
-
-        if (response.pattern) {
-            return response;
-        }
-
-        return {
-            ...response,
-            pattern: this._responseDataPattern,
+            requestBodyPattern: request.requestBodyPattern ?? this._requestBodyPattern,
+            responseDataPattern: request.responseDataPattern ?? this._responseDataPattern,
         };
     }
 

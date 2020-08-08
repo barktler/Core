@@ -5,6 +5,7 @@
  * @override Unit
  */
 
+import { mockDriver } from "@barktler/driver-mock";
 import { expect } from "chai";
 import * as Chance from "chance";
 import { Barktler } from "../../src";
@@ -26,7 +27,7 @@ describe('Given {ExampleAPI} Class', (): void => {
     it('should be able to use mock driver', async (): Promise<void> => {
 
         const api: ExampleAPI = new ExampleAPI();
-        api.useMockDriver();
+        api.useDriver(mockDriver);
 
         const response: ExampleAPIResponse = await api.fetch();
 

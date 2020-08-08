@@ -4,7 +4,7 @@
  * @description Core
  */
 
-import { IRequestConfig, IResponseConfig, mockDriver, RequestDriver, IInjectConfig } from "@barktler/driver";
+import { IInjectConfig, IRequestConfig, IResponseConfig, RequestDriver } from "@barktler/driver";
 import { Pattern } from "@sudoo/pattern";
 import { AsyncDataHook } from "@sudoo/processor";
 import { RequestVerifyOverrideFunction, ResponseVerifyOverrideFunction } from "./declare";
@@ -55,11 +55,6 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
 
         this._driver = driver;
         return this;
-    }
-
-    public useMockDriver(): this {
-
-        return this.useDriver(mockDriver);
     }
 
     public overridePreVerifyFailing(overrideFunction: RequestVerifyOverrideFunction<RequestBody>): this {

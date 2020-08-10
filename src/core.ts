@@ -4,7 +4,7 @@
  * @description Core
  */
 
-import { IInjectConfig, IRequestConfig, IResponseConfig, RequestDriver } from "@barktler/driver";
+import { IInjectConfig, IRequestConfig, IResponseConfig, PendingRequest, RequestDriver } from "@barktler/driver";
 import { Pattern } from "@sudoo/pattern";
 import { AsyncDataHook } from "@sudoo/processor";
 import { RequestVerifyOverrideFunction, ResponseVerifyOverrideFunction } from "./declare";
@@ -89,7 +89,34 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         return data;
     }
 
-    protected async _sendRequestRaw(request: IRequestConfig<RequestBody>): Promise<IResponseConfig<ResponseData>> {
+    protected async _requestForResponseConfig(request: IRequestConfig<RequestBody>): Promise<IResponseConfig<ResponseData>> {
+
+        const driver: RequestDriver | null = this._getDriver();
+        if (!driver) {
+            throw new Error('[Barktler] Driver not found');
+        }
+
+        const injectedRequest: IRequestConfig<RequestBody> = this._inject(request);
+        const preVerifyResult: boolean = await this._preHook.verify(injectedRequest);
+        if (!preVerifyResult) {
+            this._executePreVerify(injectedRequest);
+        }
+
+        const preProcessed: IRequestConfig<RequestBody> = await this._preHook.process(injectedRequest);
+
+        const response: IResponseConfig<ResponseData> = await driver<RequestBody, ResponseData>(preProcessed);
+        const injectedResponse: IResponseConfig<ResponseData> = this._inject(response);
+
+        const postVerifyResult: boolean = await this._postHook.verify(injectedResponse);
+        if (!postVerifyResult) {
+            this._executePostVerify(preProcessed, injectedResponse);
+        }
+
+        const postProcessedData: IResponseConfig<ResponseData> = await this._postHook.process(injectedResponse);
+        return postProcessedData;
+    }
+
+    protected async _requestForPendingRequest(request: IRequestConfig<RequestBody>): Promise<PendingRequest<RequestBody, ResponseData>> {
 
         const driver: RequestDriver | null = this._getDriver();
         if (!driver) {

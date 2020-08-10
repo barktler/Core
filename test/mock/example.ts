@@ -29,7 +29,7 @@ export class ExampleAPI extends Barktler<any, ExampleAPIResponse> {
 
     public async fetch(): Promise<ExampleAPIResponse> {
 
-        return await this._sendRequest({
+        return await this._requestForData({
             url: 'example.com',
             method: 'GET',
         });

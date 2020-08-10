@@ -81,7 +81,7 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         return this;
     }
 
-    protected async _sendRequest(request: IRequestConfig<RequestBody>): Promise<ResponseData> {
+    protected async _requestForData(request: IRequestConfig<RequestBody>): Promise<ResponseData> {
 
         const response: IResponseConfig<ResponseData> = await this._requestForResponseConfig(request);
         const data: ResponseData = response.data;

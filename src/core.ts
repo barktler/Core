@@ -83,7 +83,7 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
 
     protected async _sendRequest(request: IRequestConfig<RequestBody>): Promise<ResponseData> {
 
-        const response: IResponseConfig<ResponseData> = await this._sendRequestRaw(request);
+        const response: IResponseConfig<ResponseData> = await this._requestForResponseConfig(request);
         const data: ResponseData = response.data;
 
         return data;
@@ -91,25 +91,14 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
 
     protected async _requestForResponseConfig(request: IRequestConfig<RequestBody>): Promise<IResponseConfig<ResponseData>> {
 
-        const driver: RequestDriver | null = this._getDriver();
-        if (!driver) {
-            throw new Error('[Barktler] Driver not found');
-        }
+        const pendingRequest: PendingRequest<RequestBody, ResponseData> = await this._requestForPendingRequest(request);
 
-        const injectedRequest: IRequestConfig<RequestBody> = this._inject(request);
-        const preVerifyResult: boolean = await this._preHook.verify(injectedRequest);
-        if (!preVerifyResult) {
-            this._executePreVerify(injectedRequest);
-        }
-
-        const preProcessed: IRequestConfig<RequestBody> = await this._preHook.process(injectedRequest);
-
-        const response: IResponseConfig<ResponseData> = await driver<RequestBody, ResponseData>(preProcessed);
+        const response: IResponseConfig<ResponseData> = await pendingRequest.response;
         const injectedResponse: IResponseConfig<ResponseData> = this._inject(response);
 
         const postVerifyResult: boolean = await this._postHook.verify(injectedResponse);
         if (!postVerifyResult) {
-            this._executePostVerify(preProcessed, injectedResponse);
+            this._executePostVerify(request, injectedResponse);
         }
 
         const postProcessedData: IResponseConfig<ResponseData> = await this._postHook.process(injectedResponse);
@@ -130,17 +119,9 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         }
 
         const preProcessed: IRequestConfig<RequestBody> = await this._preHook.process(injectedRequest);
+        const pendingRequest: PendingRequest<RequestBody, ResponseData> = driver<RequestBody, ResponseData>(preProcessed);
 
-        const response: IResponseConfig<ResponseData> = await driver<RequestBody, ResponseData>(preProcessed);
-        const injectedResponse: IResponseConfig<ResponseData> = this._inject(response);
-
-        const postVerifyResult: boolean = await this._postHook.verify(injectedResponse);
-        if (!postVerifyResult) {
-            this._executePostVerify(preProcessed, injectedResponse);
-        }
-
-        const postProcessedData: IResponseConfig<ResponseData> = await this._postHook.process(injectedResponse);
-        return postProcessedData;
+        return pendingRequest;
     }
 
     private _inject<T extends IInjectConfig>(request: T): T {

@@ -9,6 +9,7 @@ import { mockDriver } from "@barktler/driver-mock";
 import { expect } from "chai";
 import * as Chance from "chance";
 import { Barktler } from "../../src";
+import { DefaultExampleAPI } from "../mock/default-example";
 import { ExampleAPI, ExampleAPIResponse } from "../mock/example";
 
 describe('Given {ExampleAPI} Class', (): void => {
@@ -43,6 +44,16 @@ describe('Given {ExampleAPI} Class', (): void => {
 
         Barktler.useGlobalDefaultDriver(mockDriver);
         const api: ExampleAPI = new ExampleAPI();
+
+        const response: ExampleAPIResponse = await api.fetch();
+
+        expect(api.hasDriver()).to.be.true;
+        expect(typeof response.hello).to.be.equal('string');
+    });
+
+    it('should be able to check scoped default driver', async (): Promise<void> => {
+
+        const api: ExampleAPI = new DefaultExampleAPI();
 
         const response: ExampleAPIResponse = await api.fetch();
 

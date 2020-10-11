@@ -19,6 +19,8 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         return;
     }
 
+    protected readonly defaultDriver: RequestDriver | null = null;
+
     private readonly _preHook: AsyncDataHook<IRequestConfig<RequestBody>>;
     private readonly _postHook: AsyncDataHook<IResponseConfig<ResponseData>>;
 
@@ -49,6 +51,12 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
     }
     public get postHook(): AsyncDataHook<IResponseConfig<ResponseData>> {
         return this._postHook;
+    }
+    public get hasDriver(): boolean {
+        if (typeof this._getDriver() === 'function') {
+            return true;
+        }
+        return false;
     }
 
     public useDriver(driver: RequestDriver): this {
@@ -137,6 +145,10 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
 
         if (this._driver) {
             return this._driver;
+        }
+
+        if (this.defaultDriver) {
+            return this.defaultDriver;
         }
 
         if (Barktler._globalDefaultDriver) {

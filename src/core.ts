@@ -13,9 +13,17 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
 
     protected static _globalDefaultDriver: RequestDriver | null = null;
 
-    public static useGlobalDefaultDriver(driver: RequestDriver): void {
+    public static hasGlobalDefaultDriver(): boolean {
+        return typeof this._globalDefaultDriver === 'function';
+    }
 
+    public static useGlobalDefaultDriver(driver: RequestDriver): void {
         this._globalDefaultDriver = driver;
+        return;
+    }
+
+    public static removeGlobalDefaultDriver(): void {
+        this._globalDefaultDriver = null;
         return;
     }
 
@@ -52,7 +60,9 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
     public get postHook(): AsyncDataHook<IResponseConfig<ResponseData>> {
         return this._postHook;
     }
-    public get hasDriver(): boolean {
+
+    public hasDriver(): boolean {
+
         if (typeof this._getDriver() === 'function') {
             return true;
         }

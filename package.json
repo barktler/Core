@@ -22,7 +22,7 @@
   "devDependencies": {
     "@barktler/driver-mock": "^2.0.0",
     "@sudoo/io": "^1.8.0",
-    "@sudoo/triforce": "^2.8.6"
+    "@sudoo/triforce": "^2.9.4"
   },
   "nyc": {
     "extension": [

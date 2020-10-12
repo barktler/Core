@@ -120,6 +120,8 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         }
 
         const postProcessedData: IResponseConfig<ResponseData> = await this._postHook.process(injectedResponse);
+        await this._postHook.execute(postProcessedData);
+
         return postProcessedData;
     }
 
@@ -137,6 +139,8 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         }
 
         const preProcessed: IRequestConfig<RequestBody> = await this._preHook.process(injectedRequest);
+        await this._preHook.execute(preProcessed);
+
         const pendingRequest: PendingRequest<RequestBody, ResponseData> = driver<RequestBody, ResponseData>(preProcessed);
 
         return pendingRequest;

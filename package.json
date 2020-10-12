@@ -17,7 +17,7 @@
   "homepage": "https://github.com/barktler/Core#readme",
   "dependencies": {
     "@barktler/driver": "^2.0.0",
-    "@sudoo/processor": "^1.5.0"
+    "@sudoo/processor": "^1.6.0"
   },
   "devDependencies": {
     "@barktler/driver-mock": "^2.0.0",

@@ -31,7 +31,6 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
 
     private readonly _preHook: AsyncDataHook<IRequestConfig<RequestBody>>;
     private readonly _postHook: AsyncDataHook<IResponseConfig<ResponseData>>;
-    private readonly _errorHook: AsyncDataHook<any>;
 
     private _requestBodyPattern?: Pattern;
     private _responseDataPattern?: Pattern;
@@ -44,12 +43,10 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
     protected constructor(
         preHook: AsyncDataHook<IRequestConfig<RequestBody>> = AsyncDataHook.create<IRequestConfig<RequestBody>>(),
         postHook: AsyncDataHook<IResponseConfig<ResponseData>> = AsyncDataHook.create<IResponseConfig<ResponseData>>(),
-        errorHook: AsyncDataHook<any> = AsyncDataHook.create<any>(),
     ) {
 
         this._preHook = preHook;
         this._postHook = postHook;
-        this._errorHook = errorHook;
 
         this._preVerifyFailing = null;
         this._postVerifyFailing = null;
@@ -62,9 +59,6 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
     }
     public get postHook(): AsyncDataHook<IResponseConfig<ResponseData>> {
         return this._postHook;
-    }
-    public get errorHook(): AsyncDataHook<any> {
-        return this._errorHook;
     }
 
     public hasDriver(): boolean {

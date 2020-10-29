@@ -41,7 +41,7 @@ lint-fix:
 	--config ./typescript/.eslintrc.json --fix
 
 install:
-	@echo "[INFO] Installing dev Dependencies"
+	@echo "[INFO] Installing Development Dependencies"
 	@yarn install --production=false
 
 install-prod:

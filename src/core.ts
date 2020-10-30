@@ -81,6 +81,11 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         return this;
     }
 
+    public getMixinStack(): Array<BarktlerMixin<RequestBody, ResponseData>> {
+
+        return this._mixinStack;
+    }
+
     public useMixin(mixin: BarktlerMixin<RequestBody, ResponseData>): Barktler<RequestBody, ResponseData> {
 
         const result: Barktler<RequestBody, ResponseData> | void = mixin(this);

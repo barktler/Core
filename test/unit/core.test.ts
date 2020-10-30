@@ -77,6 +77,8 @@ describe('Given {ExampleAPI} Class', (): void => {
         };
 
         api.useMixin(mixin);
+
         expect(api.hasDriver()).to.be.true;
+        expect(api.getMixinStack()).to.be.lengthOf(1);
     });
 });

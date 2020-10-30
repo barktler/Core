@@ -20,6 +20,7 @@
     "@sudoo/processor": "^1.6.0"
   },
   "devDependencies": {
+    "@barktler/driver-axios": "^2.0.1",
     "@barktler/driver-mock": "^2.0.0",
     "@sudoo/io": "^1.8.0",
     "@sudoo/triforce": "^2.9.6"

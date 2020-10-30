@@ -9,7 +9,7 @@ import { Pattern } from "@sudoo/pattern";
 import { AsyncDataHook } from "@sudoo/processor";
 import { RequestVerifyOverrideFunction, ResponseVerifyOverrideFunction } from "./declare";
 
-export type BarktlerMixin = (instance: Barktler) => void;
+export type BarktlerMixin<RequestBody extends any = any, ResponseData extends any = any> = (instance: Barktler<RequestBody, ResponseData>) => Barktler<RequestBody, ResponseData> | void;
 
 export abstract class Barktler<RequestBody extends any = any, ResponseData extends any = any> {
 
@@ -74,6 +74,16 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
     public useDriver(driver: RequestDriver): this {
 
         this._driver = driver;
+        return this;
+    }
+
+    public useMixin(mixin: BarktlerMixin<RequestBody, ResponseData>): Barktler<RequestBody, ResponseData> {
+
+        const result: Barktler<RequestBody, ResponseData> | void = mixin(this);
+
+        if (result instanceof Barktler) {
+            return result;
+        }
         return this;
     }
 

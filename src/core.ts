@@ -9,6 +9,8 @@ import { Pattern } from "@sudoo/pattern";
 import { AsyncDataHook } from "@sudoo/processor";
 import { RequestVerifyOverrideFunction, ResponseVerifyOverrideFunction } from "./declare";
 
+export type BarktlerMixin = (instance: Barktler) => void;
+
 export abstract class Barktler<RequestBody extends any = any, ResponseData extends any = any> {
 
     protected static _globalDefaultDriver: RequestDriver | null = null;

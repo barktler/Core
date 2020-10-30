@@ -8,7 +8,7 @@
 import { mockDriver } from "@barktler/driver-mock";
 import { expect } from "chai";
 import * as Chance from "chance";
-import { Barktler } from "../../src";
+import { Barktler, BarktlerMixin } from "../../src";
 import { DefaultExampleAPI } from "../mock/default-example";
 import { ExampleAPI, ExampleAPIResponse } from "../mock/example";
 
@@ -66,5 +66,17 @@ describe('Given {ExampleAPI} Class', (): void => {
         const api: ExampleAPI = new ExampleAPI();
 
         expect(api.hasDriver()).to.be.false;
+    });
+
+    it('should be able to mount mixin', async (): Promise<void> => {
+
+        const api: ExampleAPI = new ExampleAPI();
+
+        const mixin: BarktlerMixin = (instance: Barktler) => {
+            instance.useDriver(mockDriver);
+        };
+
+        api.useMixin(mixin);
+        expect(api.hasDriver()).to.be.true;
     });
 });

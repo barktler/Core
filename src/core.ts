@@ -42,6 +42,8 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
 
     private _driver: RequestDriver | null;
 
+    private readonly _mixinStack: Array<BarktlerMixin<RequestBody, ResponseData>>;
+
     protected constructor(
         preHook: AsyncDataHook<IRequestConfig<RequestBody>> = AsyncDataHook.create<IRequestConfig<RequestBody>>(),
         postHook: AsyncDataHook<IResponseConfig<ResponseData>> = AsyncDataHook.create<IResponseConfig<ResponseData>>(),
@@ -54,6 +56,8 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         this._postVerifyFailing = null;
 
         this._driver = null;
+
+        this._mixinStack = [];
     }
 
     public get preHook(): AsyncDataHook<IRequestConfig<RequestBody>> {
@@ -80,6 +84,7 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
     public useMixin(mixin: BarktlerMixin<RequestBody, ResponseData>): Barktler<RequestBody, ResponseData> {
 
         const result: Barktler<RequestBody, ResponseData> | void = mixin(this);
+        this._mixinStack.push(mixin);
 
         if (result instanceof Barktler) {
             return result;

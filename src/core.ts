@@ -138,7 +138,8 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
 
         const postVerifyResult: boolean = await this._postHook.verify(injectedResponse);
         if (!postVerifyResult) {
-            this._executePostVerify(request, injectedResponse);
+            this._executePostVerifyFailing(request, injectedResponse);
+            return;
         }
 
         const postProcessedData: IResponseConfig<ResponseData> = await this._postHook.process(injectedResponse);
@@ -157,7 +158,7 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         const injectedRequest: IRequestConfig<RequestBody> = this._inject(request);
         const preHookResult: IRequestConfig<RequestBody> | null = await this._triggerPreHook(injectedRequest);
         if (!preHookResult) {
-            this._executePreVerify(injectedRequest);
+            this._executePreVerifyFailing(injectedRequest);
             return;
         }
 
@@ -203,7 +204,7 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         return null;
     }
 
-    private _executePreVerify(request: IRequestConfig<RequestBody>) {
+    private _executePreVerifyFailing(request: IRequestConfig<RequestBody>) {
 
         if (typeof this._preVerifyFailing === 'function') {
 
@@ -218,7 +219,7 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         throw new Error('[Barktler] Pre Verify Failed');
     }
 
-    private _executePostVerify(request: IRequestConfig<RequestBody>, response: IResponseConfig<ResponseData>) {
+    private _executePostVerifyFailing(request: IRequestConfig<RequestBody>, response: IResponseConfig<ResponseData>) {
 
         if (typeof this._postVerifyFailing === 'function') {
 

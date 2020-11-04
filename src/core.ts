@@ -155,17 +155,26 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         }
 
         const injectedRequest: IRequestConfig<RequestBody> = this._inject(request);
-        const preVerifyResult: boolean = await this._preHook.verify(injectedRequest);
-        if (!preVerifyResult) {
+        const preHookResult: IRequestConfig<RequestBody> | null = await this._triggerPreHook(injectedRequest);
+        if (!preHookResult) {
             this._executePreVerify(injectedRequest);
+            return;
         }
 
-        const preProcessed: IRequestConfig<RequestBody> = await this._preHook.process(injectedRequest);
-        await this._preHook.execute(preProcessed);
-
-        const pendingRequest: PendingRequest<RequestBody, ResponseData> = driver<RequestBody, ResponseData>(preProcessed);
-
+        const pendingRequest: PendingRequest<RequestBody, ResponseData> = driver<RequestBody, ResponseData>(preHookResult);
         return pendingRequest;
+    }
+
+    protected async _triggerPreHook(request: IRequestConfig<RequestBody>): Promise<IRequestConfig<RequestBody> | null> {
+
+        const preVerifyResult: boolean = await this._preHook.verify(request);
+        if (!preVerifyResult) {
+            return null;
+        }
+
+        const preProcessed: IRequestConfig<RequestBody> = await this._preHook.process(request);
+        await this._preHook.execute(preProcessed);
+        return preProcessed;
     }
 
     private _inject<T extends IInjectConfig>(request: T): T {

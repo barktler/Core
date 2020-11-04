@@ -136,16 +136,13 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         const response: IResponseConfig<ResponseData> = await pendingRequest.response;
         const injectedResponse: IResponseConfig<ResponseData> = this._inject(response);
 
-        const postVerifyResult: boolean = await this._postHook.verify(injectedResponse);
-        if (!postVerifyResult) {
+        const postHookResult: IResponseConfig<ResponseData> = await this._triggerPostHook(injectedResponse);
+        if (!postHookResult) {
             this._executePostVerifyFailing(request, injectedResponse);
             return;
         }
 
-        const postProcessedData: IResponseConfig<ResponseData> = await this._postHook.process(injectedResponse);
-        await this._postHook.execute(postProcessedData);
-
-        return postProcessedData;
+        return postHookResult;
     }
 
     protected async _requestForPendingRequest(request: IRequestConfig<RequestBody>): Promise<PendingRequest<RequestBody, ResponseData>> {
@@ -156,6 +153,7 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         }
 
         const injectedRequest: IRequestConfig<RequestBody> = this._inject(request);
+
         const preHookResult: IRequestConfig<RequestBody> | null = await this._triggerPreHook(injectedRequest);
         if (!preHookResult) {
             this._executePreVerifyFailing(injectedRequest);
@@ -176,6 +174,18 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         const preProcessed: IRequestConfig<RequestBody> = await this._preHook.process(request);
         await this._preHook.execute(preProcessed);
         return preProcessed;
+    }
+
+    protected async _triggerPostHook(response: IResponseConfig<ResponseData>): Promise<IResponseConfig<ResponseData> | null> {
+
+        const postVerifyResult: boolean = await this._postHook.verify(response);
+        if (!postVerifyResult) {
+            return null;
+        }
+
+        const postProcessedData: IResponseConfig<ResponseData> = await this._postHook.process(response);
+        await this._postHook.execute(postProcessedData);
+        return postProcessedData;
     }
 
     private _inject<T extends IInjectConfig>(request: T): T {

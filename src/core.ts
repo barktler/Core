@@ -136,10 +136,10 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         const response: IResponseConfig<ResponseData> = await pendingRequest.response;
         const injectedResponse: IResponseConfig<ResponseData> = this._inject(response);
 
-        const postHookResult: IResponseConfig<ResponseData> = await this._triggerPostHook(injectedResponse);
+        const postHookResult: IResponseConfig<ResponseData> | null = await this._triggerPostHook(injectedResponse);
         if (!postHookResult) {
             this._executePostVerifyFailing(request, injectedResponse);
-            return;
+            return null as any;
         }
 
         return postHookResult;
@@ -157,7 +157,7 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         const preHookResult: IRequestConfig<RequestBody> | null = await this._triggerPreHook(injectedRequest);
         if (!preHookResult) {
             this._executePreVerifyFailing(injectedRequest);
-            return;
+            return null as any;
         }
 
         const pendingRequest: PendingRequest<RequestBody, ResponseData> = driver<RequestBody, ResponseData>(preHookResult);

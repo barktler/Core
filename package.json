@@ -15,14 +15,18 @@
     "url": "https://github.com/barktler/Core/issues"
   },
   "homepage": "https://github.com/barktler/Core#readme",
+  "peerDependencies": {
+    "@sudoo/pattern": "*"
+  },
   "dependencies": {
-    "@barktler/driver": "^2.0.0",
+    "@barktler/driver": "^2.1.0",
     "@sudoo/processor": "^1.6.0"
   },
   "devDependencies": {
     "@barktler/driver-axios": "^2.0.1",
     "@barktler/driver-mock": "^2.0.0",
     "@sudoo/io": "^1.8.0",
+    "@sudoo/pattern": "^1.6.1",
     "@sudoo/triforce": "^2.9.6"
   },
   "nyc": {

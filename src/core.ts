@@ -34,7 +34,11 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
     private readonly _preHook: AsyncDataHook<IRequestConfig<RequestBody>>;
     private readonly _postHook: AsyncDataHook<IResponseConfig<ResponseData>>;
 
+    private _requestParamsPattern?: Pattern;
+    private _requestHeaderPattern?: Pattern;
     private _requestBodyPattern?: Pattern;
+
+    private _responseHeaderPattern?: Pattern;
     private _responseDataPattern?: Pattern;
 
     private _preVerifyFailing: RequestVerifyOverrideFunction<RequestBody> | null;
@@ -191,9 +195,15 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
     private _inject<T extends IInjectConfig>(request: T): T {
 
         return {
+
+            requestParamsPattern: this._requestParamsPattern,
+            requestHeaderPattern: this._requestHeaderPattern,
+            requestBodyPattern: this._requestBodyPattern,
+
+            responseHeaderPattern: this._responseHeaderPattern,
+            responseDataPattern: this._responseDataPattern,
+
             ...request,
-            requestBodyPattern: request.requestBodyPattern ?? this._requestBodyPattern,
-            responseDataPattern: request.responseDataPattern ?? this._responseDataPattern,
         };
     }
 

@@ -35,10 +35,10 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
     private readonly _postHook: AsyncDataHook<IResponseConfig<ResponseData>>;
 
     private _requestParamsPattern?: Pattern;
-    private _requestHeaderPattern?: Pattern;
+    private _requestHeadersPattern?: Pattern;
     private _requestBodyPattern?: Pattern;
 
-    private _responseHeaderPattern?: Pattern;
+    private _responseHeadersPattern?: Pattern;
     private _responseDataPattern?: Pattern;
 
     private _preVerifyFailing: RequestVerifyOverrideFunction<RequestBody> | null;
@@ -113,9 +113,27 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         return this;
     }
 
+    protected _declareRequestParamsPattern(pattern: Pattern): this {
+
+        this._requestParamsPattern = pattern;
+        return this;
+    }
+
+    protected _declareRequestHeadersPattern(pattern: Pattern): this {
+
+        this._requestHeadersPattern = pattern;
+        return this;
+    }
+
     protected _declareRequestBodyPattern(pattern: Pattern): this {
 
         this._requestBodyPattern = pattern;
+        return this;
+    }
+
+    protected _declareResponseHeaderPattern(pattern: Pattern): this {
+
+        this._requestHeadersPattern = pattern;
         return this;
     }
 
@@ -197,10 +215,10 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         return {
 
             requestParamsPattern: this._requestParamsPattern,
-            requestHeaderPattern: this._requestHeaderPattern,
+            requestHeadersPattern: this._requestHeadersPattern,
             requestBodyPattern: this._requestBodyPattern,
 
-            responseHeaderPattern: this._responseHeaderPattern,
+            responseHeadersPattern: this._responseHeadersPattern,
             responseDataPattern: this._responseDataPattern,
 
             ...request,

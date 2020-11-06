@@ -71,6 +71,22 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         return this._postHook;
     }
 
+    public get requestParamsPattern(): Pattern | undefined {
+        return this._requestParamsPattern;
+    }
+    public get requestHeadersPattern(): Pattern | undefined {
+        return this._requestHeadersPattern;
+    }
+    public get requestBodyPattern(): Pattern | undefined {
+        return this._requestBodyPattern;
+    }
+    public get responseHeadersPattern(): Pattern | undefined {
+        return this._responseHeadersPattern;
+    }
+    public get responseDataPattern(): Pattern | undefined {
+        return this._responseDataPattern;
+    }
+
     public hasDriver(): boolean {
 
         if (typeof this._getDriver() === 'function') {

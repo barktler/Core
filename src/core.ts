@@ -92,15 +92,25 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
     }
 
     public setConfig(key: string, value: any): this {
+
         this._configs.set(key, value);
         return this;
     }
+
     public getConfig(key: string): any {
-        this._configs.get(key);
-        return this;
+
+        return this._configs.get(key);
     }
+
     public getAllConfigs(): Record<string, any> {
-        return { ...this._configs };
+
+        const keys: string[] = [...this._configs.keys()];
+        return keys.reduce((result: Record<string, any>, current: string) => {
+            return {
+                ...result,
+                [current]: this._configs.get(current),
+            };
+        }, {});
     }
 
     public hasDriver(): boolean {

@@ -14,7 +14,6 @@ import { ExampleAPI, ExampleAPIResponse } from "../mock/example";
 
 describe('Given {ExampleAPI} Class', (): void => {
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const chance: Chance.Chance = new Chance('barktler-core');
 
     afterEach(() => {
@@ -27,6 +26,21 @@ describe('Given {ExampleAPI} Class', (): void => {
 
         expect(api).to.be.instanceOf(ExampleAPI);
         expect(api).to.be.instanceOf(Barktler);
+    });
+
+    it('should be able set and get config', (): void => {
+
+        const key: string = chance.string();
+        const value: string = chance.string();
+
+        const api: ExampleAPI = new ExampleAPI();
+
+        api.setConfig(key, value);
+
+        expect(api.getConfig(key)).to.be.equal(value);
+        expect(api.getAllConfigs()).to.be.deep.equal({
+            [key]: value,
+        });
     });
 
     it('should be able to use mock driver', async (): Promise<void> => {

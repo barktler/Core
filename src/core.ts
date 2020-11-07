@@ -34,6 +34,8 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
     private readonly _preHook: AsyncDataHook<IRequestConfig<RequestBody>>;
     private readonly _postHook: AsyncDataHook<IResponseConfig<ResponseData>>;
 
+    private readonly _configs: Map<string, any>;
+
     private _requestParamsPattern?: Pattern;
     private _requestHeadersPattern?: Pattern;
     private _requestBodyPattern?: Pattern;
@@ -55,6 +57,8 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
 
         this._preHook = preHook;
         this._postHook = postHook;
+
+        this._configs = new Map<string, any>();
 
         this._preVerifyFailing = null;
         this._postVerifyFailing = null;

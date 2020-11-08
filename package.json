@@ -23,8 +23,8 @@
     "@sudoo/processor": "^1.6.0"
   },
   "devDependencies": {
-    "@barktler/driver-axios": "^2.0.1",
-    "@barktler/driver-mock": "^2.0.0",
+    "@barktler/driver-axios": "^3.0.0",
+    "@barktler/driver-mock": "^3.0.1",
     "@sudoo/io": "^1.8.0",
     "@sudoo/pattern": "^1.6.1",
     "@sudoo/triforce": "^2.9.6"

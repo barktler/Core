@@ -45,7 +45,7 @@ install:
 	@yarn install --production=false
 
 install-prod:
-	@echo "[INFO] Installing Dependencies"
+	@echo "[INFO] Installing Production Dependencies"
 	@yarn install --production=true
 
 outdated: install

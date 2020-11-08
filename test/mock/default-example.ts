@@ -5,7 +5,7 @@
  * @override Mock
  */
 
-import { mockDriver } from "@barktler/driver-mock";
+import { createMockDriver } from "@barktler/driver-mock";
 import { RequestDriver } from "../../src";
 import { ExampleAPI } from "./example";
 
@@ -16,5 +16,7 @@ export type ExampleAPIResponse = {
 
 export class DefaultExampleAPI extends ExampleAPI {
 
-    protected readonly defaultDriver: RequestDriver | null = mockDriver;
+    protected readonly defaultDriver: RequestDriver | null = createMockDriver({
+        mockResponseData: true,
+    });
 }

@@ -5,7 +5,7 @@
  * @override Unit
  */
 
-import { mockDriver } from "@barktler/driver-mock";
+import { createMockDriver } from "@barktler/driver-mock";
 import { expect } from "chai";
 import * as Chance from "chance";
 import { Barktler, BarktlerMixin } from "../../src";
@@ -46,7 +46,9 @@ describe('Given {ExampleAPI} Class', (): void => {
     it('should be able to use mock driver', async (): Promise<void> => {
 
         const api: ExampleAPI = new ExampleAPI();
-        api.useDriver(mockDriver);
+        api.useDriver(createMockDriver({
+            mockResponseData: true,
+        }));
 
         const response: ExampleAPIResponse = await api.fetch();
 
@@ -56,7 +58,9 @@ describe('Given {ExampleAPI} Class', (): void => {
 
     it('should be able to check global default driver', async (): Promise<void> => {
 
-        Barktler.useGlobalDefaultDriver(mockDriver);
+        Barktler.useGlobalDefaultDriver(createMockDriver({
+            mockResponseData: true,
+        }));
         const api: ExampleAPI = new ExampleAPI();
 
         const response: ExampleAPIResponse = await api.fetch();
@@ -87,7 +91,9 @@ describe('Given {ExampleAPI} Class', (): void => {
         const api: ExampleAPI = new ExampleAPI();
 
         const mixin: BarktlerMixin = (instance: Barktler) => {
-            instance.useDriver(mockDriver);
+            instance.useDriver(createMockDriver({
+                mockResponseData: true,
+            }));
         };
 
         api.useMixin(mixin);

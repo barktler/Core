@@ -14,3 +14,7 @@ yarn add @barktler/core
 # Or
 npm install @barktler/core --save
 ```
+
+## Documents
+
+See [Barktler Documents](//barktler.com).

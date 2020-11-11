@@ -148,8 +148,11 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
 
     public getAllConfigs(): Record<string, any> {
 
-        const keys: string[] = [...this._configs.keys()];
-        return keys.reduce((result: Record<string, any>, current: string) => {
+        const keys: Set<string> = new Set([
+            ...this._configs.keys(),
+            ...Barktler._globalConfigs.keys(),
+        ]);
+        return [...keys].reduce((result: Record<string, any>, current: string) => {
             const instanceConfig: any = this._configs.get(current);
             const finalConfig: any = typeof instanceConfig === 'undefined' || instanceConfig === null
                 ? Barktler._globalConfigs.get(current)

@@ -58,6 +58,20 @@ describe('Given {ExampleAPI} Class', (): void => {
         });
     });
 
+    it('should be able clear global config', (): void => {
+
+        const key: string = chance.string();
+        const value: string = chance.string();
+
+        Barktler.setGlobalConfig(key, value);
+        const api: ExampleAPI = new ExampleAPI();
+
+        Barktler.clearGlobalConfigs();
+
+        expect(api.getConfig(key)).to.be.equal(undefined);
+        expect(api.getAllConfigs()).to.be.deep.equal({});
+    });
+
     it('should be able to use mock driver', async (): Promise<void> => {
 
         const api: ExampleAPI = new ExampleAPI();

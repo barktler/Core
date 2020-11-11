@@ -14,6 +14,7 @@ export type BarktlerMixin<RequestBody extends any = any, ResponseData extends an
 export abstract class Barktler<RequestBody extends any = any, ResponseData extends any = any> {
 
     protected static _globalDefaultDriver: RequestDriver | null = null;
+    protected static _globalConfigs: Map<string, any> = new Map();
 
     public static hasGlobalDefaultDriver(): boolean {
         return typeof this._globalDefaultDriver === 'function';
@@ -27,6 +28,28 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
     public static removeGlobalDefaultDriver(): void {
         this._globalDefaultDriver = null;
         return;
+    }
+
+    public static setGlobalConfig(key: string, value: any): void {
+
+        this._globalConfigs.set(key, value);
+        return;
+    }
+
+    public static getGlobalConfig(key: string): any {
+
+        return this._globalConfigs.get(key);
+    }
+
+    public static getAllGlobalConfigs(): Record<string, any> {
+
+        const keys: string[] = [...this._globalConfigs.keys()];
+        return keys.reduce((result: Record<string, any>, current: string) => {
+            return {
+                ...result,
+                [current]: this._globalConfigs.get(current),
+            };
+        }, {});
     }
 
     protected readonly defaultDriver: RequestDriver | null = null;

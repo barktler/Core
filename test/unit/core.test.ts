@@ -18,6 +18,7 @@ describe('Given {ExampleAPI} Class', (): void => {
 
     afterEach(() => {
         Barktler.removeGlobalDefaultDriver();
+        Barktler.clearGlobalConfigs();
     });
 
     it('should be able to construct', (): void => {
@@ -43,14 +44,13 @@ describe('Given {ExampleAPI} Class', (): void => {
         });
     });
 
-    it('should be able set and get config', (): void => {
+    it('should be able set and get global config', (): void => {
 
         const key: string = chance.string();
         const value: string = chance.string();
 
+        Barktler.setGlobalConfig(key, value);
         const api: ExampleAPI = new ExampleAPI();
-
-        api.setConfig(key, value);
 
         expect(api.getConfig(key)).to.be.equal(value);
         expect(api.getAllConfigs()).to.be.deep.equal({

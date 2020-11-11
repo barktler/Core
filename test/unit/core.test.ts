@@ -95,6 +95,7 @@ describe('Given {ExampleAPI} Class', (): void => {
         const response: ExampleAPIResponse = await api.fetch();
 
         expect(api.hasDriver()).to.be.true;
+        expect(Barktler.hasGlobalDefaultDriver()).to.be.true;
         expect(typeof response.hello).to.be.equal('string');
     });
 

@@ -129,6 +129,21 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
 
         const keys: string[] = [...this._configs.keys()];
         return keys.reduce((result: Record<string, any>, current: string) => {
+            const localConfig: any = this._configs.get(current);
+            const finalConfig: any = typeof localConfig === 'undefined' || localConfig === null
+                ? Barktler._globalConfigs.get(current)
+                : localConfig;
+            return {
+                ...result,
+                [current]: finalConfig,
+            };
+        }, {});
+    }
+
+    public getAllInstanceConfigs(): Record<string, any> {
+
+        const keys: string[] = [...this._configs.keys()];
+        return keys.reduce((result: Record<string, any>, current: string) => {
             return {
                 ...result,
                 [current]: this._configs.get(current),

@@ -43,6 +43,21 @@ describe('Given {ExampleAPI} Class', (): void => {
         });
     });
 
+    it('should be able set and get config', (): void => {
+
+        const key: string = chance.string();
+        const value: string = chance.string();
+
+        const api: ExampleAPI = new ExampleAPI();
+
+        api.setConfig(key, value);
+
+        expect(api.getConfig(key)).to.be.equal(value);
+        expect(api.getAllConfigs()).to.be.deep.equal({
+            [key]: value,
+        });
+    });
+
     it('should be able to use mock driver', async (): Promise<void> => {
 
         const api: ExampleAPI = new ExampleAPI();

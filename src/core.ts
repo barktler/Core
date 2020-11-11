@@ -52,6 +52,18 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         }, {});
     }
 
+    public static deleteGlobalConfig(key: string): void {
+
+        this._globalConfigs.delete(key);
+        return;
+    }
+
+    public static clearGlobalConfigs(): void {
+
+        this._globalConfigs.clear();
+        return;
+    }
+
     protected readonly defaultDriver: RequestDriver | null = null;
 
     private readonly _preHook: AsyncDataHook<IRequestConfig<RequestBody>>;
@@ -149,6 +161,18 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
                 [current]: this._configs.get(current),
             };
         }, {});
+    }
+
+    public deleteConfig(key: string): void {
+
+        this._configs.delete(key);
+        return;
+    }
+
+    public clearConfigs(): void {
+
+        this._configs.clear();
+        return;
     }
 
     public hasDriver(): boolean {

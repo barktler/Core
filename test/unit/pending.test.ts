@@ -91,6 +91,41 @@ describe('Given {HookedPendingRequest} Class', (): void => {
         });
     });
 
+    it('should be fail verify failing', async (): Promise<void> => {
+
+        const newData: string = chance.string();
+        const responseResult: IResponseConfig = {
+            status: HTTP_RESPONSE_CODE.OK,
+            statusText: 'OK',
+            headers: {},
+            data: chance.string(),
+        };
+
+        const pendingRequest: PendingRequest = PendingRequest.create({
+            response: Promise.resolve(responseResult),
+            abort: () => void 0,
+        });
+
+        const hookedPendingRequest: HookedPendingRequest = HookedPendingRequest.create(
+            pendingRequest,
+            (value) => ({
+                ...value,
+                data: newData,
+            }),
+            async () => null,
+            async (value) => value,
+        );
+
+        const response: IResponseConfig | null = await hookedPendingRequest.response;
+
+        expect(hookedPendingRequest.originalData).to.be.deep.equal(responseResult);
+        expect(hookedPendingRequest.injectedOriginalData).to.be.deep.equal({
+            ...responseResult,
+            data: newData,
+        });
+        expect(response).to.be.deep.equal(null);
+    });
+
     it('should be able to get error response', async (): Promise<void> => {
 
         const errorMessage: string = chance.string();

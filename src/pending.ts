@@ -27,6 +27,9 @@ export class HookedPendingRequest<ResponseData extends any = any> {
 
     private readonly _response: Promise<IResponseConfig<ResponseData> | null>;
 
+    private _originalData: any;
+    private _injectedOriginalData: any;
+
     private constructor(
         pendingRequest: PendingRequest,
         injectFunction: <T>(config: T) => T,
@@ -43,7 +46,11 @@ export class HookedPendingRequest<ResponseData extends any = any> {
 
             this._pendingRequest.response.then((data: IResponseConfig<ResponseData>) => {
 
+                this._originalData = data;
+
                 const injectedData: IResponseConfig<ResponseData> = this._injectFunction(data);
+                this._injectedOriginalData = injectedData;
+
                 return this._triggerPostHook(injectedData);
             }).then((hookedData: IResponseConfig<ResponseData> | null) => {
 
@@ -67,6 +74,12 @@ export class HookedPendingRequest<ResponseData extends any = any> {
 
     public get response(): Promise<IResponseConfig<ResponseData> | null> {
         return this._response;
+    }
+    public get originalData(): any {
+        return this._originalData;
+    }
+    public get injectedOriginalData(): any {
+        return this._injectedOriginalData;
     }
 
     public get pending(): boolean {

@@ -8,6 +8,7 @@ import { IInjectConfig, IRequestConfig, IResponseConfig, PendingRequest, Request
 import { Pattern } from "@sudoo/pattern";
 import { AsyncDataHook } from "@sudoo/processor";
 import { RequestVerifyOverrideFunction, ResponseVerifyOverrideFunction } from "./declare";
+import { HookedPendingRequest } from "./pending";
 
 export type BarktlerMixin<RequestBody extends any = any, ResponseData extends any = any> = (instance: Barktler<RequestBody, ResponseData>) => Barktler<RequestBody, ResponseData> | void;
 
@@ -275,18 +276,27 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
 
     protected async _requestForResponseConfig(request: IRequestConfig<RequestBody>): Promise<IResponseConfig<ResponseData>> {
 
-        const pendingRequest: PendingRequest<RequestBody, ResponseData> = await this._requestForPendingRequest(request);
+        const hookedPendingRequest: HookedPendingRequest<ResponseData> = await this._requestForHookedPendingRequest(request);
 
-        const response: IResponseConfig<ResponseData> = await pendingRequest.response;
-        const injectedResponse: IResponseConfig<ResponseData> = this._inject(response);
-
-        const postHookResult: IResponseConfig<ResponseData> | null = await this._triggerPostHook(injectedResponse);
+        const postHookResult: IResponseConfig<ResponseData> | null = await hookedPendingRequest.response;
         if (!postHookResult) {
-            this._executePostVerifyFailing(request, injectedResponse);
+            this._executePostVerifyFailing(request, hookedPendingRequest.injectedOriginalData);
             return null as any;
         }
 
         return postHookResult;
+    }
+
+    protected async _requestForHookedPendingRequest(request: IRequestConfig<RequestBody>): Promise<HookedPendingRequest<ResponseData>> {
+
+        const pendingRequest: PendingRequest<RequestBody, ResponseData> = await this._requestForPendingRequest(request);
+
+        return HookedPendingRequest.create(
+            pendingRequest,
+            this._inject.bind(this),
+            this._triggerPostHook.bind(this),
+            this._triggerErrorHook.bind(this),
+        );
     }
 
     protected async _requestForPendingRequest(request: IRequestConfig<RequestBody>): Promise<PendingRequest<RequestBody, ResponseData>> {

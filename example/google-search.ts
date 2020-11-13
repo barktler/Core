@@ -4,7 +4,7 @@
  * @description Google Search
  */
 
-import { axiosDriver } from "@barktler/driver-axios";
+import { createAxiosDriver } from "@barktler/driver-axios";
 import { Barktler } from "../src";
 
 class GoogleSearchAPI extends Barktler {
@@ -26,5 +26,5 @@ class GoogleSearchAPI extends Barktler {
 }
 
 const api: GoogleSearchAPI = GoogleSearchAPI.create();
-api.useDriver(axiosDriver);
+api.useDriver(createAxiosDriver());
 api.search("hello").then(console.log);

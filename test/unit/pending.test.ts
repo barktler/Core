@@ -85,6 +85,10 @@ describe('Given {HookedPendingRequest} Class', (): void => {
 
         const response: IResponseConfig | null = await hookedPendingRequest.response;
 
+        expect(hookedPendingRequest.pending).to.be.false;
+        expect(hookedPendingRequest.completed).to.be.true;
+        expect(hookedPendingRequest.succeed).to.be.true;
+        expect(hookedPendingRequest.failed).to.be.false;
         expect(response).to.be.deep.equal({
             ...responseResult,
             data: newData,
@@ -152,6 +156,10 @@ describe('Given {HookedPendingRequest} Class', (): void => {
             responseError = err;
         }
 
+        expect(hookedPendingRequest.pending).to.be.false;
+        expect(hookedPendingRequest.completed).to.be.true;
+        expect(hookedPendingRequest.succeed).to.be.false;
+        expect(hookedPendingRequest.failed).to.be.true;
         expect(responseError.toString()).to.be.equal(new Error(errorMessage).toString());
     });
 
@@ -182,5 +190,70 @@ describe('Given {HookedPendingRequest} Class', (): void => {
         }
 
         expect(responseError.toString()).to.be.equal(new Error(errorMessage).toString());
+    });
+
+    it('should be able to handler hook error response', async (): Promise<void> => {
+
+        const errorMessage: string = chance.string();
+
+        const pendingRequest: PendingRequest = PendingRequest.create({
+            response: (async () => {
+                throw new Error(chance.string());
+            })(),
+            abort: () => void 0,
+        });
+
+        const hookedPendingRequest: HookedPendingRequest = HookedPendingRequest.create(
+            pendingRequest,
+            (value) => value,
+            async (value) => value,
+            async () => {
+                throw new Error(errorMessage);
+            },
+        );
+
+        let responseError: any;
+
+        try {
+            await hookedPendingRequest.response;
+        } catch (err) {
+            responseError = err;
+        }
+
+        expect(responseError.toString()).to.be.equal(new Error(errorMessage).toString());
+    });
+
+    it('should be able to abort', async (): Promise<void> => {
+
+        const responseResult: IResponseConfig = {
+            status: HTTP_RESPONSE_CODE.OK,
+            statusText: 'OK',
+            headers: {},
+            data: chance.string(),
+        };
+
+        const pendingRequest: PendingRequest = PendingRequest.create({
+            response: Promise.resolve(responseResult),
+            abort: () => void 0,
+        });
+
+        const hookedPendingRequest: HookedPendingRequest = HookedPendingRequest.create(
+            pendingRequest,
+            (value) => value,
+            async (value) => value,
+            async (value) => value,
+        );
+
+        let error: any;
+
+        hookedPendingRequest.abort();
+
+        try {
+            await hookedPendingRequest.response;
+        } catch (err) {
+            error = err;
+        }
+
+        expect(error.toString()).to.be.equal(new Error("[Barktler] Aborted").toString());
     });
 });

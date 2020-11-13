@@ -39,9 +39,11 @@ describe('Given {Barktler} Class', (): void => {
         api.setConfig(key, value);
 
         expect(api.getConfig(key)).to.be.equal(value);
+        expect(Barktler.getGlobalConfig(key)).to.be.equal(undefined);
         expect(api.getAllConfigs()).to.be.deep.equal({
             [key]: value,
         });
+        expect(Barktler.getAllGlobalConfigs()).to.be.deep.equal({});
     });
 
     it('should be able set and get global config', (): void => {
@@ -53,7 +55,11 @@ describe('Given {Barktler} Class', (): void => {
         const api: ExampleAPI = new ExampleAPI();
 
         expect(api.getConfig(key)).to.be.equal(value);
+        expect(Barktler.getGlobalConfig(key)).to.be.equal(value);
         expect(api.getAllConfigs()).to.be.deep.equal({
+            [key]: value,
+        });
+        expect(Barktler.getAllGlobalConfigs()).to.be.deep.equal({
             [key]: value,
         });
     });
@@ -70,6 +76,22 @@ describe('Given {Barktler} Class', (): void => {
 
         expect(api.getConfig(key)).to.be.equal(undefined);
         expect(api.getAllConfigs()).to.be.deep.equal({});
+    });
+
+    it('should be able get getters', (): void => {
+
+        const api: ExampleAPI = new ExampleAPI();
+
+        const mixin: BarktlerMixin = (instance: Barktler) => {
+            instance.useDriver(createMockDriver({
+                mockResponseData: true,
+            }));
+        };
+
+        api.useMixin(mixin);
+
+        expect(api.hasDriver()).to.be.true;
+        expect(api.getMixinStack()).to.be.lengthOf(1);
     });
 
     it('should be able to use mock driver', async (): Promise<void> => {

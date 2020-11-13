@@ -26,6 +26,7 @@
     "@barktler/driver-axios": "^3.0.1",
     "@barktler/driver-mock": "^3.0.2",
     "@sudoo/io": "^1.8.0",
+    "@sudoo/magic": "^1.8.0",
     "@sudoo/pattern": "^1.6.1",
     "@sudoo/triforce": "^2.9.7"
   },

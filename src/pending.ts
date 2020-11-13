@@ -12,14 +12,16 @@ export class HookedPendingRequest<ResponseData extends any = any> {
     // eslint-disable-next-line @typescript-eslint/no-shadow
     public static create<ResponseData extends any = any>(
         pendingRequest: PendingRequest,
+        injectFunction: <T>(config: T) => T,
         triggerPostHook: TriggerPostHookFunction<ResponseData>,
         triggerErrorHook: TriggerErrorHookFunction,
     ): HookedPendingRequest {
 
-        return new HookedPendingRequest(pendingRequest, triggerPostHook, triggerErrorHook);
+        return new HookedPendingRequest(pendingRequest, injectFunction, triggerPostHook, triggerErrorHook);
     }
 
     private readonly _pendingRequest: PendingRequest;
+    private readonly _injectFunction: <T>(config: T) => T;
     private readonly _triggerPostHook: TriggerPostHookFunction<ResponseData>;
     private readonly _triggerErrorHook: TriggerErrorHookFunction;
 
@@ -27,11 +29,13 @@ export class HookedPendingRequest<ResponseData extends any = any> {
 
     private constructor(
         pendingRequest: PendingRequest,
+        injectFunction: <T>(config: T) => T,
         triggerPostHook: TriggerPostHookFunction<ResponseData>,
         triggerErrorHook: TriggerErrorHookFunction,
     ) {
 
         this._pendingRequest = pendingRequest;
+        this._injectFunction = injectFunction;
         this._triggerPostHook = triggerPostHook;
         this._triggerErrorHook = triggerErrorHook;
 
@@ -39,7 +43,8 @@ export class HookedPendingRequest<ResponseData extends any = any> {
 
             this._pendingRequest.response.then((data: IResponseConfig<ResponseData>) => {
 
-                return this._triggerPostHook(data);
+                const injectedData: IResponseConfig<ResponseData> = this._injectFunction(data);
+                return this._triggerPostHook(injectedData);
             }).then((hookedData: IResponseConfig<ResponseData> | null) => {
 
                 resolve(hookedData);

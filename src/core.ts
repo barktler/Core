@@ -344,7 +344,7 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         return errorProcessedData;
     }
 
-    private _inject<T extends IInjectConfig>(request: T): T {
+    private _inject<T extends IInjectConfig>(config: T): T {
 
         return {
 
@@ -355,7 +355,7 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
             responseHeadersPattern: this._responseHeadersPattern,
             responseDataPattern: this._responseDataPattern,
 
-            ...request,
+            ...config,
         };
     }
 

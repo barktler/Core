@@ -12,7 +12,7 @@ import { Barktler, BarktlerMixin } from "../../src";
 import { DefaultExampleAPI } from "../mock/default-example";
 import { ExampleAPI, ExampleAPIResponse } from "../mock/example";
 
-describe('Given {ExampleAPI} Class', (): void => {
+describe('Given {Barktler} Class', (): void => {
 
     const chance: Chance.Chance = new Chance('barktler-core');
 

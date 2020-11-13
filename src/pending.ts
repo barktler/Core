@@ -23,7 +23,7 @@ export class HookedPendingRequest<ResponseData extends any = any> {
     private readonly _triggerPostHook: TriggerPostHookFunction<ResponseData>;
     private readonly _triggerErrorHook: TriggerErrorHookFunction;
 
-    private readonly _response: Promise<IResponseConfig<ResponseData>>;
+    private readonly _response: Promise<IResponseConfig<ResponseData> | null>;
 
     private constructor(
         pendingRequest: PendingRequest,
@@ -35,28 +35,32 @@ export class HookedPendingRequest<ResponseData extends any = any> {
         this._triggerPostHook = triggerPostHook;
         this._triggerErrorHook = triggerErrorHook;
 
-        this._response = new Promise<IResponseConfig<ResponseData>>((resolve: (data: IResponseConfig<ResponseData>) => void, reject: (reason: any) => void) => {
+        this._response = new Promise<IResponseConfig<ResponseData> | null>((resolve: (data: IResponseConfig<ResponseData> | null) => void, reject: (reason: any) => void) => {
 
             this._pendingRequest.response.then((data: IResponseConfig<ResponseData>) => {
 
                 return this._triggerPostHook(data);
-            }).then((hookedData: IResponseConfig<ResponseData>) => {
+            }).then((hookedData: IResponseConfig<ResponseData> | null) => {
 
                 resolve(hookedData);
+                return;
             }).catch((reason: any) => {
 
                 this._triggerErrorHook(reason).then((errorReason: any) => {
 
                     reject(errorReason);
+                    return;
                 }).catch((newReason: any) => {
 
                     reject(newReason);
+                    return;
                 });
+                return;
             });
         });
     }
 
-    public get response(): Promise<IResponseConfig<ResponseData>> {
+    public get response(): Promise<IResponseConfig<ResponseData> | null> {
         return this._response;
     }
 

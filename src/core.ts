@@ -332,6 +332,18 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         return postProcessedData;
     }
 
+    protected async _triggerErrorHook(reason: any): Promise<IResponseConfig<ResponseData> | null> {
+
+        const errorVerifyResult: boolean = await this._errorHook.verify(reason);
+        if (!errorVerifyResult) {
+            return null;
+        }
+
+        const errorProcessedData: IResponseConfig<ResponseData> = await this._errorHook.process(reason);
+        await this._errorHook.execute(errorProcessedData);
+        return errorProcessedData;
+    }
+
     private _inject<T extends IInjectConfig>(request: T): T {
 
         return {

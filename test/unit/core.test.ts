@@ -6,6 +6,7 @@
  */
 
 import { createMockDriver } from "@barktler/driver-mock";
+import { AsyncDataHook } from "@sudoo/processor";
 import { expect } from "chai";
 import * as Chance from "chance";
 import { Barktler, BarktlerMixin } from "../../src";
@@ -62,6 +63,8 @@ describe('Given {Barktler} Class', (): void => {
         expect(Barktler.getAllGlobalConfigs()).to.be.deep.equal({
             [key]: value,
         });
+        expect(api.getInstanceConfig(key)).to.be.equal(undefined);
+        expect(api.getAllInstanceConfigs()).to.be.deep.equal({});
     });
 
     it('should be able clear global config', (): void => {
@@ -78,20 +81,66 @@ describe('Given {Barktler} Class', (): void => {
         expect(api.getAllConfigs()).to.be.deep.equal({});
     });
 
+    it('should be able delete global config', (): void => {
+
+        const key: string = chance.string();
+        const value: string = chance.string();
+
+        Barktler.setGlobalConfig(key, value);
+        const api: ExampleAPI = new ExampleAPI();
+
+        Barktler.deleteGlobalConfig(key);
+
+        expect(api.getConfig(key)).to.be.equal(undefined);
+        expect(api.getAllConfigs()).to.be.deep.equal({});
+    });
+
+    it('should be able delete instance config', (): void => {
+
+        const key: string = chance.string();
+        const value: string = chance.string();
+
+        const api: ExampleAPI = new ExampleAPI();
+        api.setConfig(key, value);
+        api.deleteConfig(key);
+
+        expect(api.getConfig(key)).to.be.equal(undefined);
+        expect(api.getAllConfigs()).to.be.deep.equal({});
+    });
+
+    it('should be able clear instance config', (): void => {
+
+        const key: string = chance.string();
+        const value: string = chance.string();
+
+        const api: ExampleAPI = new ExampleAPI();
+        api.setConfig(key, value);
+        api.clearConfigs();
+
+        expect(api.getConfig(key)).to.be.equal(undefined);
+        expect(api.getAllConfigs()).to.be.deep.equal({});
+    });
+
     it('should be able get getters', (): void => {
 
         const api: ExampleAPI = new ExampleAPI();
 
-        const mixin: BarktlerMixin = (instance: Barktler) => {
-            instance.useDriver(createMockDriver({
-                mockResponseData: true,
-            }));
-        };
+        expect(api.preHook).to.be.instanceOf(AsyncDataHook);
+        expect(api.postHook).to.be.instanceOf(AsyncDataHook);
+        expect(api.errorHook).to.be.instanceOf(AsyncDataHook);
 
-        api.useMixin(mixin);
-
-        expect(api.hasDriver()).to.be.true;
-        expect(api.getMixinStack()).to.be.lengthOf(1);
+        expect(api.requestParamsPattern).to.be.equal(undefined);
+        expect(api.requestHeadersPattern).to.be.equal(undefined);
+        expect(api.requestBodyPattern).to.be.equal(undefined);
+        expect(api.responseHeadersPattern).to.be.equal(undefined);
+        expect(api.responseDataPattern).to.be.deep.equal({
+            type: 'map',
+            map: {
+                hello: {
+                    type: 'string',
+                },
+            },
+        });
     });
 
     it('should be able to use mock driver', async (): Promise<void> => {

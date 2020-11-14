@@ -1,7 +1,7 @@
 /**
  * @author WMXPY
  * @namespace Core
- * @description Example
+ * @description All Example
  * @override Mock
  */
 

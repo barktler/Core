@@ -202,6 +202,36 @@ describe('Given {Barktler} Class', (): void => {
         expect(api.hasDriver()).to.be.false;
     });
 
+    it('should be able to fail when post verify failed', async (): Promise<void> => {
+
+        const api: DefaultExampleAPI = new DefaultExampleAPI();
+        api.postHook.verifier.add(() => false);
+
+        let error: any;
+        try {
+            await api.fetch();
+        } catch (err) {
+            error = err;
+        }
+
+        expect(error.message).to.be.equal("[Barktler] Post Verify Failed");
+    });
+
+    it('should be able to fail when pre verify failed', async (): Promise<void> => {
+
+        const api: DefaultExampleAPI = new DefaultExampleAPI();
+        api.preHook.verifier.add(() => false);
+
+        let error: any;
+        try {
+            await api.fetch();
+        } catch (err) {
+            error = err;
+        }
+
+        expect(error.message).to.be.equal("[Barktler] Pre Verify Failed");
+    });
+
     it('should be able to mount mixin', async (): Promise<void> => {
 
         const api: ExampleAPI = new ExampleAPI();

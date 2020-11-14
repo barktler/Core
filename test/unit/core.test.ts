@@ -12,6 +12,7 @@ import * as Chance from "chance";
 import { Barktler, BarktlerMixin } from "../../src";
 import { AllExampleAPI, helloMap } from "../mock/all";
 import { DefaultExampleAPI } from "../mock/default-example";
+import { ErrorExampleAPI } from "../mock/error";
 import { ExampleAPI, ExampleAPIResponse } from "../mock/example";
 
 describe('Given {Barktler} Class', (): void => {
@@ -200,6 +201,37 @@ describe('Given {Barktler} Class', (): void => {
         const api: ExampleAPI = new ExampleAPI();
 
         expect(api.hasDriver()).to.be.false;
+    });
+
+    it('should be able to trigger error hook', async (): Promise<void> => {
+
+        const api: ErrorExampleAPI = new ErrorExampleAPI();
+        api.useDriver(createMockDriver());
+
+        let error: any;
+        try {
+            await api.fetch();
+        } catch (err) {
+            error = err;
+        }
+
+        expect(error.message).to.be.equal("ERROR");
+    });
+
+    it('should be able to trigger error hook - verify', async (): Promise<void> => {
+
+        const api: ErrorExampleAPI = new ErrorExampleAPI();
+        api.useDriver(createMockDriver());
+        api.errorHook.verifier.add(() => false);
+
+        let error: any;
+        try {
+            await api.fetch();
+        } catch (err) {
+            error = err;
+        }
+
+        expect(error.message).to.be.equal("ERROR");
     });
 
     it('should be able to fail when post verify failed', async (): Promise<void> => {

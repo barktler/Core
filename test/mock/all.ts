@@ -8,7 +8,7 @@
 import { createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
 import { Barktler } from "../../src";
 
-export type ExampleAPIResponse = {
+export type AllExampleAPIResponse = {
 
     readonly hello: string;
 };
@@ -17,7 +17,7 @@ const helloMap: Pattern = createStrictMapPattern({
     hello: createStringPattern(),
 });
 
-export class AllExampleAPI extends Barktler<any, ExampleAPIResponse> {
+export class AllExampleAPI extends Barktler<any, AllExampleAPIResponse> {
 
     public constructor() {
 
@@ -29,7 +29,7 @@ export class AllExampleAPI extends Barktler<any, ExampleAPIResponse> {
         super._declareResponseDataPattern(helloMap);
     }
 
-    public async fetch(): Promise<ExampleAPIResponse> {
+    public async fetch(): Promise<AllExampleAPIResponse> {
 
         return await this._requestForData({
             url: 'example.com',

@@ -268,6 +268,46 @@ describe('Given {Barktler} Class', (): void => {
         expect(error.message).to.be.equal(message);
     });
 
+    it('should be able to fail when post verify failed - with override throw', async (): Promise<void> => {
+
+        const message: string = chance.string();
+
+        const api: DefaultExampleAPI = new DefaultExampleAPI();
+        api.postHook.verifier.add(() => false);
+        api.overridePostVerifyFailing(() => {
+            throw new Error(message);
+        });
+
+        let error: any;
+        try {
+            await api.fetch();
+        } catch (err) {
+            error = err;
+        }
+
+        expect(error.message).to.be.equal(message);
+    });
+
+    it('should be able to fail when pre verify failed - with override throw', async (): Promise<void> => {
+
+        const message: string = chance.string();
+
+        const api: DefaultExampleAPI = new DefaultExampleAPI();
+        api.preHook.verifier.add(() => false);
+        api.overridePreVerifyFailing(() => {
+            throw new Error(message);
+        });
+
+        let error: any;
+        try {
+            await api.fetch();
+        } catch (err) {
+            error = err;
+        }
+
+        expect(error.message).to.be.equal(message);
+    });
+
     it('should be able to mount mixin', async (): Promise<void> => {
 
         const api: ExampleAPI = new ExampleAPI();

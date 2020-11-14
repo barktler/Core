@@ -13,7 +13,7 @@ export type AllExampleAPIResponse = {
     readonly hello: string;
 };
 
-const helloMap: Pattern = createStrictMapPattern({
+export const helloMap: Pattern = createStrictMapPattern({
     hello: createStringPattern(),
 });
 

@@ -10,6 +10,7 @@ import { AsyncDataHook } from "@sudoo/processor";
 import { expect } from "chai";
 import * as Chance from "chance";
 import { Barktler, BarktlerMixin } from "../../src";
+import { AllExampleAPI, helloMap } from "../mock/all";
 import { DefaultExampleAPI } from "../mock/default-example";
 import { ExampleAPI, ExampleAPIResponse } from "../mock/example";
 
@@ -141,6 +142,17 @@ describe('Given {Barktler} Class', (): void => {
                 },
             },
         });
+    });
+
+    it('should be able ensure getters', (): void => {
+
+        const api: AllExampleAPI = new AllExampleAPI();
+
+        expect(api.requestParamsPattern).to.be.equal(helloMap);
+        expect(api.requestHeadersPattern).to.be.equal(helloMap);
+        expect(api.requestBodyPattern).to.be.equal(helloMap);
+        expect(api.responseHeadersPattern).to.be.equal(helloMap);
+        expect(api.responseDataPattern).to.be.deep.equal(helloMap);
     });
 
     it('should be able to use mock driver', async (): Promise<void> => {

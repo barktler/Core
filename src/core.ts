@@ -256,7 +256,7 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
 
     protected _declareResponseHeaderPattern(pattern: Pattern): this {
 
-        this._requestHeadersPattern = pattern;
+        this._responseHeadersPattern = pattern;
         return this;
     }
 

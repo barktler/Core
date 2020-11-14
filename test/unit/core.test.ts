@@ -45,6 +45,9 @@ describe('Given {Barktler} Class', (): void => {
         expect(api.getAllConfigs()).to.be.deep.equal({
             [key]: value,
         });
+        expect(api.getAllInstanceConfigs()).to.be.deep.equal({
+            [key]: value,
+        });
         expect(Barktler.getAllGlobalConfigs()).to.be.deep.equal({});
     });
 
@@ -207,6 +210,23 @@ describe('Given {Barktler} Class', (): void => {
             instance.useDriver(createMockDriver({
                 mockResponseData: true,
             }));
+        };
+
+        api.useMixin(mixin);
+
+        expect(api.hasDriver()).to.be.true;
+        expect(api.getMixinStack()).to.be.lengthOf(1);
+    });
+
+    it('should be able to mount returnable mixin', async (): Promise<void> => {
+
+        const api: ExampleAPI = new ExampleAPI();
+
+        const mixin: BarktlerMixin = (instance: Barktler) => {
+            instance.useDriver(createMockDriver({
+                mockResponseData: true,
+            }));
+            return instance;
         };
 
         api.useMixin(mixin);

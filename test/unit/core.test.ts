@@ -307,6 +307,42 @@ describe('Given {Barktler} Class', (): void => {
 
         expect(error.message).to.be.equal(message);
     });
+    it('should be able to fail when post verify failed - with override define', async (): Promise<void> => {
+
+        const message: string = chance.string();
+        let error: any;
+
+        const api: DefaultExampleAPI = new DefaultExampleAPI();
+        api.postHook.verifier.add(() => false);
+        api.overridePostVerifyFailing(() => {
+            error = message;
+        });
+
+        await api.fetch();
+        expect(error).to.be.equal(message);
+    });
+
+    it('should be able to fail when pre verify failed - with override define', async (): Promise<void> => {
+
+        const message: string = chance.string();
+        let error: any;
+
+        const api: DefaultExampleAPI = new DefaultExampleAPI();
+        api.preHook.verifier.add(() => false);
+        api.overridePreVerifyFailing(() => {
+            error = message;
+        });
+
+        let lateError: any;
+        try {
+            await api.fetch();
+        } catch (err) {
+            lateError = err;
+        }
+
+        expect(error).to.be.equal(message);
+        expect(lateError.message).to.be.equal("[Barktler] Invalid Pending Request");
+    });
 
     it('should be able to mount mixin', async (): Promise<void> => {
 

@@ -44,6 +44,10 @@ export class HookedPendingRequest<ResponseData extends any = any> {
 
         this._response = new Promise<IResponseConfig<ResponseData> | null>((resolve: (data: IResponseConfig<ResponseData> | null) => void, reject: (reason: any) => void) => {
 
+            if (!this._pendingRequest) {
+                reject(new Error("[Barktler] Invalid Pending Request"));
+            }
+
             this._pendingRequest.response.then((data: IResponseConfig<ResponseData>) => {
 
                 this._originalData = data;

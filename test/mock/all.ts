@@ -5,6 +5,7 @@
  * @override Mock
  */
 
+import { createStrictMapPattern, createStringPattern, Pattern } from "@sudoo/pattern";
 import { Barktler } from "../../src";
 
 export type ExampleAPIResponse = {
@@ -12,19 +13,20 @@ export type ExampleAPIResponse = {
     readonly hello: string;
 };
 
-export class ExampleAPI extends Barktler<any, ExampleAPIResponse> {
+const helloMap: Pattern = createStrictMapPattern({
+    hello: createStringPattern(),
+});
+
+export class AllExampleAPI extends Barktler<any, ExampleAPIResponse> {
 
     public constructor() {
 
         super();
-        super._declareResponseDataPattern({
-            type: 'map',
-            map: {
-                hello: {
-                    type: 'string',
-                },
-            },
-        });
+        super._declareRequestHeadersPattern(helloMap);
+        super._declareRequestParamsPattern(helloMap);
+        super._declareRequestBodyPattern(helloMap);
+        super._declareResponseHeaderPattern(helloMap);
+        super._declareResponseDataPattern(helloMap);
     }
 
     public async fetch(): Promise<ExampleAPIResponse> {

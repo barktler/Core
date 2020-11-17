@@ -47,6 +47,11 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         return this._globalMixinStack;
     }
 
+    public static clearGlobalMixin(): void {
+
+        this._globalMixinStack = [];
+    }
+
     public static setGlobalConfig(key: string, value: any): void {
 
         this._globalConfigs.set(key, value);

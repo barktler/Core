@@ -47,7 +47,7 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
         return this._globalMixinStack;
     }
 
-    public static clearGlobalMixin(): void {
+    public static removeAllGlobalMixin(): void {
 
         this._globalMixinStack = [];
     }
@@ -241,6 +241,15 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
 
         if (result instanceof Barktler) {
             return result;
+        }
+        return this;
+    }
+
+    public adoptGlobalMixinStack(): this {
+
+        for (const mixin of Barktler.getGlobalMixinStack()) {
+
+            this.useMixin(mixin);
         }
         return this;
     }

@@ -17,18 +17,34 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
     protected static _globalDefaultDriver: RequestDriver | null = null;
     protected static _globalConfigs: Map<string, any> = new Map();
 
+    protected static _globalMixinStack: BarktlerMixin[] = [];
+
     public static hasGlobalDefaultDriver(): boolean {
+
         return typeof this._globalDefaultDriver === 'function';
     }
 
     public static useGlobalDefaultDriver(driver: RequestDriver): void {
+
         this._globalDefaultDriver = driver;
         return;
     }
 
     public static removeGlobalDefaultDriver(): void {
+
         this._globalDefaultDriver = null;
         return;
+    }
+
+    public static useGlobalMixin(mixin: BarktlerMixin): void {
+
+        this._globalMixinStack.push(mixin);
+        return;
+    }
+
+    public static getGlobalMixinStack(): BarktlerMixin[] {
+
+        return this._globalMixinStack;
     }
 
     public static setGlobalConfig(key: string, value: any): void {

@@ -5,7 +5,7 @@
 [![npm version](https://badge.fury.io/js/%40barktler%2Fcore.svg)](https://www.npmjs.com/package/@barktler/core)
 [![downloads](https://img.shields.io/npm/dm/@barktler/core.svg)](https://www.npmjs.com/package/@barktler/core)
 
-:droplet: The Base of APIs
+:droplet: Barktler API Solution
 
 ## Install
 

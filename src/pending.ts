@@ -52,25 +52,35 @@ export class HookedPendingRequest<ResponseData extends any = any> {
 
                 this._originalData = data;
 
-                const injectedData: IResponseConfig<ResponseData> = this._injectFunction(data);
-                this._injectedOriginalData = injectedData;
+                if (!data.succeed) {
 
-                return this._triggerPostHook(injectedData);
-            }).then((hookedData: IResponseConfig<ResponseData> | null) => {
+                    this._triggerErrorHook(data).then((errorNewData: IResponseConfig<ResponseData>) => {
 
-                resolve(hookedData);
-                return;
-            }).catch((reason: any) => {
+                        reject(errorNewData);
+                        return;
+                    }).catch((hookErrorReason: any) => {
 
-                this._triggerErrorHook(reason).then((errorReason: any) => {
+                        reject(new Error(`[Barktler] ErrorHook Internal Error: "${hookErrorReason}"`));
+                        return;
+                    });
+                } else {
 
-                    reject(errorReason);
-                    return;
-                }).catch((newReason: any) => {
+                    const injectedData: IResponseConfig<ResponseData> = this._injectFunction(data);
+                    this._injectedOriginalData = injectedData;
 
-                    reject(newReason);
-                    return;
-                });
+                    this._triggerPostHook(injectedData).then((hookedData: IResponseConfig<ResponseData> | null) => {
+
+                        resolve(hookedData);
+                        return;
+                    }).catch((hookErrorReason: any) => {
+
+                        reject(new Error(`[Barktler] PostHook Internal Error: "${hookErrorReason}"`));
+                        return;
+                    });
+                }
+            }).catch((internalErrorReason: any) => {
+
+                reject(internalErrorReason);
                 return;
             });
         });

@@ -19,7 +19,7 @@
     "@sudoo/pattern": "*"
   },
   "dependencies": {
-    "@barktler/driver": "^2.2.0",
+    "@barktler/driver": "^3.0.0",
     "@sudoo/processor": "^1.6.0"
   },
   "devDependencies": {

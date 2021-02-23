@@ -35,6 +35,7 @@ describe('Given {HookedPendingRequest} Class', (): void => {
     it('should be able to get response', async (): Promise<void> => {
 
         const responseResult: IResponseConfig = {
+            succeed: true,
             status: HTTP_RESPONSE_CODE.OK,
             statusText: 'OK',
             headers: {},
@@ -62,6 +63,7 @@ describe('Given {HookedPendingRequest} Class', (): void => {
 
         const newData: string = chance.string();
         const responseResult: IResponseConfig = {
+            succeed: true,
             status: HTTP_RESPONSE_CODE.OK,
             statusText: 'OK',
             headers: {},
@@ -99,6 +101,7 @@ describe('Given {HookedPendingRequest} Class', (): void => {
 
         const newData: string = chance.string();
         const responseResult: IResponseConfig = {
+            succeed: true,
             status: HTTP_RESPONSE_CODE.OK,
             statusText: 'OK',
             headers: {},
@@ -167,10 +170,16 @@ describe('Given {HookedPendingRequest} Class', (): void => {
 
         const errorMessage: string = chance.string();
 
+        const responseResult: IResponseConfig = {
+            succeed: false,
+            status: HTTP_RESPONSE_CODE.BAD_REQUEST,
+            statusText: 'BAD REQUEST',
+            headers: {},
+            data: chance.string(),
+        };
+
         const pendingRequest: PendingRequest = PendingRequest.create({
-            response: (async () => {
-                throw new Error(chance.string());
-            })(),
+            response: Promise.resolve(responseResult),
             abort: () => void 0,
         });
 
@@ -196,10 +205,16 @@ describe('Given {HookedPendingRequest} Class', (): void => {
 
         const errorMessage: string = chance.string();
 
+        const responseResult: IResponseConfig = {
+            succeed: false,
+            status: HTTP_RESPONSE_CODE.BAD_REQUEST,
+            statusText: 'BAD REQUEST',
+            headers: {},
+            data: chance.string(),
+        };
+
         const pendingRequest: PendingRequest = PendingRequest.create({
-            response: (async () => {
-                throw new Error(chance.string());
-            })(),
+            response: Promise.resolve(responseResult),
             abort: () => void 0,
         });
 
@@ -220,12 +235,13 @@ describe('Given {HookedPendingRequest} Class', (): void => {
             responseError = err;
         }
 
-        expect(responseError.toString()).to.be.equal(new Error(errorMessage).toString());
+        expect(responseError.toString()).to.be.equal(`Error: [Barktler] ErrorHook Internal Error: "${new Error(errorMessage).toString()}"`);
     });
 
     it('should be able to abort', async (): Promise<void> => {
 
         const responseResult: IResponseConfig = {
+            succeed: true,
             status: HTTP_RESPONSE_CODE.OK,
             statusText: 'OK',
             headers: {},

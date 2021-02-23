@@ -1,6 +1,6 @@
 {
   "name": "@barktler/core",
-  "version": "2.10.0",
+  "version": "2.10.1",
   "description": ":droplet: Base for APIs",
   "repository": {
     "type": "git",
@@ -28,7 +28,7 @@
     "@sudoo/io": "^1.8.0",
     "@sudoo/magic": "^1.8.0",
     "@sudoo/pattern": "^1.6.1",
-    "@sudoo/triforce": "^2.9.10"
+    "@sudoo/triforce": "^2.9.16"
   },
   "nyc": {
     "extension": [

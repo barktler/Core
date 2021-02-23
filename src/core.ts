@@ -90,7 +90,7 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
 
     private readonly _preHook: AsyncDataHook<IRequestConfig<RequestBody>>;
     private readonly _postHook: AsyncDataHook<IResponseConfig<ResponseData>>;
-    private readonly _errorHook: AsyncDataHook<any>;
+    private readonly _errorHook: AsyncDataHook<IResponseConfig<ResponseData>>;
 
     private readonly _configs: Map<string, any>;
 
@@ -134,7 +134,7 @@ export abstract class Barktler<RequestBody extends any = any, ResponseData exten
     public get postHook(): AsyncDataHook<IResponseConfig<ResponseData>> {
         return this._postHook;
     }
-    public get errorHook(): AsyncDataHook<Error> {
+    public get errorHook(): AsyncDataHook<IResponseConfig<ResponseData>> {
         return this._errorHook;
     }
 

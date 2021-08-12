@@ -28,6 +28,7 @@
         "../node_modules"
     ],
     "include": [
+        "../example/**/*",
         "../src/**/*",
         "../test/**/*"
     ]

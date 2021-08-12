@@ -23,9 +23,10 @@
     "@sudoo/processor": "^1.6.0"
   },
   "devDependencies": {
+    "@sudoo/build-utils": "^1.0.0",
     "@barktler/driver-axios": "^4.0.0",
     "@barktler/driver-mock": "^4.0.0",
-    "@sudoo/io": "^1.8.0",
+    "@sudoo/license": "^1.1.0",
     "@sudoo/magic": "^1.8.0",
     "@sudoo/pattern": "^1.7.0",
     "@sudoo/triforce": "^2.9.29"

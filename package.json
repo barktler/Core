@@ -27,7 +27,7 @@
     "@barktler/driver-mock": "^4.0.0",
     "@sudoo/io": "^1.8.0",
     "@sudoo/magic": "^1.8.0",
-    "@sudoo/pattern": "^1.6.1",
+    "@sudoo/pattern": "^1.7.0",
     "@sudoo/triforce": "^2.9.25"
   },
   "nyc": {

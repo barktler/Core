@@ -1,7 +1,7 @@
 {
   "name": "@barktler/core",
   "version": "3.0.0",
-  "description": ":droplet: Base for APIs",
+  "description": "Base for APIs",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/barktler/Core.git"
